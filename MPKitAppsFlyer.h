@@ -16,12 +16,13 @@
 //  limitations under the License.
 //
 
-#if defined(MP_KIT_APPSFLYER)
+#import <Foundation/Foundation.h>
+#import "MPKitExecStatus.h"
+#import "MPKitProtocol.h"
 
-#import "MPKitAbstract.h"
+@interface MPKitAppsFlyer : NSObject <MPKitProtocol>
 
-@interface MPKitAppsFlyer : MPKitAbstract <MPKitInstanceProtocol>
+@property (nonatomic, strong, nonnull) NSDictionary *configuration;
+@property (nonatomic, unsafe_unretained, readonly) BOOL started;
 
 @end
-
-#endif

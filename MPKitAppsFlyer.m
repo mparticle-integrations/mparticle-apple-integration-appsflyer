@@ -16,8 +16,6 @@
 //  limitations under the License.
 //
 
-#if defined(MP_KIT_APPSFLYER)
-
 #import "MPKitAppsFlyer.h"
 #import "MPCommerceEvent.h"
 #import "MPCommerceEvent+Dictionary.h"
@@ -25,7 +23,10 @@
 #import "MPEvent.h"
 #import "MPProduct.h"
 #import "MPTransactionAttributes.h"
+#import "mParticle.h"
+#import "MPKitRegister.h"
 #import "AppsFlyerTracker.h"
+#import <UIKit/UIKit.h>
 
 NSString *const afAppleAppId = @"appleAppId";
 NSString *const afDevKey = @"devKey";
@@ -34,58 +35,67 @@ static AppsFlyerTracker *appsFlyerTracker = nil;
 
 @implementation MPKitAppsFlyer
 
-- (instancetype)initWithConfiguration:(NSDictionary *)configuration {
-    self = [super initWithConfiguration:configuration];
++ (NSNumber *)kitCode {
+    return @92;
+}
+
++ (void)load {
+    MPKitRegister *kitRegister = [[MPKitRegister alloc] initWithName:@"AppsFlyer" className:@"MPKitAppsFlyer" startImmediately:YES];
+    [MParticle registerExtension:kitRegister];
+}
+
+- (instancetype)initWithConfiguration:(NSDictionary *)configuration startImmediately:(BOOL)startImmediately {
+    NSAssert(configuration != nil, @"Required parameter. It cannot be nil.");
+    self = [super init];
     if (!self) {
         return nil;
     }
-    
+
     NSString *appleAppId = configuration[afAppleAppId];
     NSString *devKey = configuration[afDevKey];
     if (!appleAppId || !devKey) {
         return nil;
     }
-    
+
     appsFlyerTracker = [AppsFlyerTracker sharedTracker];
     appsFlyerTracker.appleAppID = appleAppId;
     appsFlyerTracker.appsFlyerDevKey = devKey;
-    
-    NSNotificationCenter *center = NSNotificationCenter.defaultCenter;
-    [center removeObserver:self];
-    [center addObserver:self
-               selector:@selector(didBecomeActive)
-                   name:UIApplicationDidBecomeActiveNotification
-                 object:nil];
 
-    frameworkAvailable = YES;
-    started = YES;
-    self.forwardedEvents = YES;
-    self.active = YES;
-    
+    _started = startImmediately;
+
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSDictionary *userInfo = @{mParticleKitInstanceKey:@(MPKitInstanceAppsFlyer),
-                                   mParticleEmbeddedSDKInstanceKey:@(MPKitInstanceAppsFlyer)};
-        
+        NSDictionary *userInfo = @{mParticleKitInstanceKey:[[self class] kitCode],
+                                   mParticleEmbeddedSDKInstanceKey:[[self class] kitCode]};
+
         [[NSNotificationCenter defaultCenter] postNotificationName:mParticleKitDidBecomeActiveNotification
                                                             object:nil
                                                           userInfo:userInfo];
-        
+
         [[NSNotificationCenter defaultCenter] postNotificationName:mParticleEmbeddedSDKDidBecomeActiveNotification
                                                             object:nil
                                                           userInfo:userInfo];
     });
-    
+
     return self;
 }
 
-- (void)didBecomeActive {
-    if (self.started && self.active) {
-        [[AppsFlyerTracker sharedTracker] trackAppLaunch];
-    }
+- (nonnull MPKitExecStatus *)didBecomeActive {
+    [[AppsFlyerTracker sharedTracker] trackAppLaunch];
+    MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
+    return execStatus;
 }
 
-- (nonnull MPKitExecStatus *)openURL:(nonnull NSURL *)url sourceApplication:(nonnull NSString *)sourceApplication annotation:(nullable id)annotation {
-    [appsFlyerTracker handleOpenURL:url sourceApplication:sourceApplication withAnnotaion:annotation];
+- (nonnull MPKitExecStatus *)openURL:(nonnull NSURL *)url options:(nullable NSDictionary<NSString *, id> *)options {
+    [appsFlyerTracker handleOpenURL:url
+                  sourceApplication:options[UIApplicationOpenURLOptionsSourceApplicationKey]
+                      withAnnotation:options[UIApplicationOpenURLOptionsAnnotationKey]];
+
+    MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
+    return execStatus;
+}
+
+- (nonnull MPKitExecStatus *)openURL:(nonnull NSURL *)url sourceApplication:(nullable NSString *)sourceApplication annotation:(nullable id)annotation {
+    [appsFlyerTracker handleOpenURL:url sourceApplication:sourceApplication withAnnotation:annotation];
     MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
     return execStatus;
 }
@@ -128,12 +138,12 @@ static AppsFlyerTracker *appsFlyerTracker = nil;
         ||  action == MPCommerceEventActionAddToWishList
         ||  action == MPCommerceEventActionCheckout
         ||  action == MPCommerceEventActionPurchase) {
-        
+
         NSMutableDictionary *values = [NSMutableDictionary dictionary];
         if (commerceEvent.currency) {
             values[AFEventParamCurrency] = commerceEvent.currency;
         }
-        
+
         if (action == MPCommerceEventActionAddToCart || action == MPCommerceEventActionAddToWishList) {
             NSArray<MPProduct *> *products = commerceEvent.products;
             if (products && [products count] != 0) {
@@ -200,5 +210,3 @@ static AppsFlyerTracker *appsFlyerTracker = nil;
 }
 
 @end
-
-#endif
