@@ -56,6 +56,7 @@ static AppsFlyerTracker *appsFlyerTracker = nil;
     appsFlyerTracker.appleAppID = appleAppId;
     appsFlyerTracker.appsFlyerDevKey = devKey;
 
+    _configuration = configuration;
     _started = startImmediately;
 
     dispatch_async(dispatch_get_main_queue(), ^{
