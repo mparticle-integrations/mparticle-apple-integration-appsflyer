@@ -59,7 +59,12 @@ static AppsFlyerTracker *appsFlyerTracker = nil;
     _configuration = configuration;
     _started = startImmediately;
 
+    BOOL alreadyActive = [[UIApplication sharedApplication] applicationState] == UIApplicationStateActive;
+
     dispatch_async(dispatch_get_main_queue(), ^{
+        if (alreadyActive) {
+            [self didBecomeActive];
+        }
         NSDictionary *userInfo = @{mParticleKitInstanceKey:[[self class] kitCode]};
 
         [[NSNotificationCenter defaultCenter] postNotificationName:mParticleKitDidBecomeActiveNotification
