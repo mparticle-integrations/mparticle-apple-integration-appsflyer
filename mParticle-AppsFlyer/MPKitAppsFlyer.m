@@ -17,19 +17,12 @@
 //
 
 #import "MPKitAppsFlyer.h"
-#import "MPCommerceEvent.h"
-#import "MPCommerceEvent+Dictionary.h"
-#import "MPCommerceEventInstruction.h"
-#import "MPEvent.h"
-#import "MPProduct.h"
-#import "MPTransactionAttributes.h"
 #import "mParticle.h"
-#import "MPKitRegister.h"
 #import "AppsFlyerTracker.h"
-#import <UIKit/UIKit.h>
 
 NSString *const afAppleAppId = @"appleAppId";
 NSString *const afDevKey = @"devKey";
+NSString *const kMPKAFCustomerUserId = @"af_customer_user_id";
 
 static AppsFlyerTracker *appsFlyerTracker = nil;
 
@@ -88,7 +81,7 @@ static AppsFlyerTracker *appsFlyerTracker = nil;
     NSString *annotationKey = &UIApplicationOpenURLOptionsAnnotationKey != NULL ? UIApplicationOpenURLOptionsAnnotationKey : @"UIApplicationOpenURLOptionsAnnotationKey";
     NSString *sourceAppKey = &UIApplicationOpenURLOptionsSourceApplicationKey != NULL ? UIApplicationOpenURLOptionsSourceApplicationKey : @"UIApplicationOpenURLOptionsSourceApplicationKey" ;
 #pragma clang diagnostic pop
-    
+
     [appsFlyerTracker handleOpenURL:url
                   sourceApplication:options[sourceAppKey]
                       withAnnotation:options[annotationKey]];
@@ -103,11 +96,12 @@ static AppsFlyerTracker *appsFlyerTracker = nil;
     return execStatus;
 }
 
-- (nonnull MPKitExecStatus *)continueUserActivity:(nonnull NSUserActivity *)userActivity restorationHandler:(void(^__nonnull)(NSArray * __nullable restorableObjects))restorationHandler {
+- (nonnull MPKitExecStatus *)continueUserActivity:(nonnull NSUserActivity *)userActivity restorationHandler:(void(^ _Nonnull)(NSArray * _Nullable restorableObjects))restorationHandler {
     [[AppsFlyerTracker sharedTracker] continueUserActivity:userActivity restorationHandler:restorationHandler];
     MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
     return execStatus;
 }
+
 - (nonnull MPKitExecStatus *)didUpdateUserActivity:(nonnull NSUserActivity *)userActivity {
     [[AppsFlyerTracker sharedTracker] didUpdateUserActivity:userActivity];
     MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
@@ -137,35 +131,47 @@ static AppsFlyerTracker *appsFlyerTracker = nil;
 - (nonnull MPKitExecStatus *)logCommerceEvent:(nonnull MPCommerceEvent *)commerceEvent {
     MPKitExecStatus *execStatus;
     MPCommerceEventAction action = commerceEvent.action;
-    if (    action == MPCommerceEventActionAddToCart
-        ||  action == MPCommerceEventActionAddToWishList
-        ||  action == MPCommerceEventActionCheckout
-        ||  action == MPCommerceEventActionPurchase) {
 
+    if (action == MPCommerceEventActionAddToCart ||
+        action == MPCommerceEventActionAddToWishList ||
+        action == MPCommerceEventActionCheckout ||
+        action == MPCommerceEventActionPurchase)
+    {
         NSMutableDictionary *values = [NSMutableDictionary dictionary];
         if (commerceEvent.currency) {
             values[AFEventParamCurrency] = commerceEvent.currency;
         }
 
+        NSString *customerUserId = commerceEvent.userDefinedAttributes[kMPKAFCustomerUserId];
+        if (customerUserId) {
+            values[kMPKAFCustomerUserId] = customerUserId;
+        }
+
         if (action == MPCommerceEventActionAddToCart || action == MPCommerceEventActionAddToWishList) {
             NSArray<MPProduct *> *products = commerceEvent.products;
+
             if (products && [products count] != 0) {
                 execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess forwardCount:0];
                 NSString *appsFlyerEventName = action == MPCommerceEventActionAddToCart ? AFEventAddToCart : AFEventAddToWishlist;
+
                 for (MPProduct *product in products) {
                     NSMutableDictionary *productValues = [values mutableCopy];
                     if (product.price) {
                         productValues[AFEventParamPrice] = product.price;
                     }
+
                     if (product.quantity) {
                         productValues[AFEventParamQuantity] = product.quantity;
                     }
+
                     if (product.sku) {
                         productValues[AFEventParamContentId] = product.sku;
                     }
+
                     if (product.category) {
                         productValues[AFEventParamContentType] = product.category;
                     }
+
                     [appsFlyerTracker trackEvent:appsFlyerEventName withValues:productValues];
                     [execStatus incrementForwardCount];
                 }
@@ -179,11 +185,13 @@ static AppsFlyerTracker *appsFlyerTracker = nil;
             if (commerceEvent.count) {
                 values[AFEventParamQuantity] = @(commerceEvent.count);
             }
+
             NSNumber *revenue = commerceEvent.transactionAttributes.revenue;
             if (revenue) {
                 NSString *appsFlyerParamName = MPCommerceEventActionPurchase ? AFEventParamRevenue : AFEventParamPrice;
                 values[appsFlyerParamName] = revenue;
             }
+
             [appsFlyerTracker trackEvent:appsFlyerEventName withValues:values];
         }
     }
