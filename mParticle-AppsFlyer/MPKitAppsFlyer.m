@@ -20,6 +20,11 @@
 #import "mParticle.h"
 #import "AppsFlyerTracker.h"
 
+#if TARGET_OS_IOS == 1 && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+    #import <UserNotifications/UserNotifications.h>
+    #import <UserNotifications/UNUserNotificationCenter.h>
+#endif
+
 NSString *const afAppleAppId = @"appleAppId";
 NSString *const afDevKey = @"devKey";
 NSString *const kMPKAFCustomerUserId = @"af_customer_user_id";
@@ -113,6 +118,20 @@ static AppsFlyerTracker *appsFlyerTracker = nil;
     MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
     return execStatus;
 }
+
+#if TARGET_OS_IOS == 1 && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+- (nonnull MPKitExecStatus *)userNotificationCenter:(nonnull UNUserNotificationCenter *)center willPresentNotification:(nonnull UNNotification *)notification {
+    [appsFlyerTracker handlePushNotification:notification.request.content.userInfo];
+    MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
+    return execStatus;
+}
+
+- (nonnull MPKitExecStatus *)userNotificationCenter:(nonnull UNUserNotificationCenter *)center didReceiveNotificationResponse:(nonnull UNNotificationResponse *)response {
+    [appsFlyerTracker handlePushNotification:response.notification.request.content.userInfo];
+    MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
+    return execStatus;
+}
+#endif
 
 - (nonnull MPKitExecStatus *)setUserIdentity:(nullable NSString *)identityString identityType:(MPUserIdentity)identityType {
     MPKitExecStatus *execStatus;
