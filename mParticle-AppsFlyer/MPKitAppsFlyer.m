@@ -146,8 +146,13 @@ static AppsFlyerTracker *appsFlyerTracker = nil;
         [appsFlyerTracker setCustomerUserID:identityString];
         execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
     } else if (identityType == MPUserIdentityEmail) {
-        [appsFlyerTracker setUserEmails:@[identityString] withCryptType:EmailCryptTypeNone];
-        execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
+        if (identityString) {
+            [appsFlyerTracker setUserEmails:@[identityString] withCryptType:EmailCryptTypeNone];
+            execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
+        }
+        else {
+            execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeFail];
+        }
     } else {
         execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeFail];
     }
