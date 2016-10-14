@@ -27,7 +27,7 @@
 
 NSString *const afAppleAppId = @"appleAppId";
 NSString *const afDevKey = @"devKey";
-NSString* const afAppsFlyerIdIntegrationKey = @"appsflyer_id_integration_setting";
+NSString *const afAppsFlyerIdIntegrationKey = @"appsflyer_id_integration_setting";
 NSString *const kMPKAFCustomerUserId = @"af_customer_user_id";
 
 static AppsFlyerTracker *appsFlyerTracker = nil;
@@ -72,7 +72,7 @@ static AppsFlyerTracker *appsFlyerTracker = nil;
     });
     
     NSString *appsFlyerUID = (NSString *) [[AppsFlyerTracker sharedTracker] getAppsFlyerUID];
-    if (!appsFlyerUID){
+    if (appsFlyerUID){
         NSDictionary<NSString *, NSString *> *integrationAttributes = @{afAppsFlyerIdIntegrationKey:appsFlyerUID};
         [[MParticle sharedInstance] setIntegrationAttributes:integrationAttributes forKit:[[self class] kitCode]];
     }
