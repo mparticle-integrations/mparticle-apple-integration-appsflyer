@@ -1,5 +1,5 @@
 //
-//  MPKitAppsFlyer.h
+//  mParticle_AppsFlyer.h
 //
 //  Copyright 2016 mParticle, Inc.
 //
@@ -16,16 +16,14 @@
 //  limitations under the License.
 //
 
-#import <Foundation/Foundation.h>
-#if defined(__has_include) && __has_include(<mParticle_Apple_SDK/mParticle.h>)
-#import <mParticle_Apple_SDK/mParticle.h>
-#else
-#import "mParticle.h"
-#endif
+#import <UIKit/UIKit.h>
 
-@interface MPKitAppsFlyer : NSObject <MPKitProtocol>
+//! Project version number for mParticle-AppsFlyer.
+FOUNDATION_EXPORT double mParticle_AppsFlyerVersionNumber;
 
-@property (nonatomic, strong, nonnull) NSDictionary *configuration;
-@property (nonatomic, unsafe_unretained, readonly) BOOL started;
+//! Project version string for mParticle-AppsFlyer.
+FOUNDATION_EXPORT const unsigned char mParticle_AppsFlyerVersionString[];
 
-@end
+// In this header, you should import all the public headers of your framework using statements like #import <mParticle_AppsFlyer/PublicHeader.h>
+
+#import <mParticle_AppsFlyer/MPKitAppsFlyer.h>

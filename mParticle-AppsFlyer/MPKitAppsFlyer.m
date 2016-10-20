@@ -17,8 +17,11 @@
 //
 
 #import "MPKitAppsFlyer.h"
-#import "mParticle.h"
+#if defined(__has_include) && __has_include(<AppsFlyerTracker/AppsFlyerTracker.h>)
+#import <AppsFlyerTracker/AppsFlyerTracker.h>
+#else
 #import "AppsFlyerTracker.h"
+#endif
 
 #if TARGET_OS_IOS == 1 && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
     #import <UserNotifications/UserNotifications.h>
@@ -87,23 +90,27 @@ static AppsFlyerTracker *appsFlyerTracker = nil;
 }
 
 - (nonnull MPKitExecStatus *)openURL:(nonnull NSURL *)url options:(nullable NSDictionary<NSString *, id> *)options {
+    [appsFlyerTracker handleOpenUrl:url options:options];
+    MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
+    return execStatus;
+}
+
+- (nonnull MPKitExecStatus *)openURL:(nonnull NSURL *)url sourceApplication:(nullable NSString *)sourceApplication annotation:(nullable id)annotation {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wtautological-pointer-compare"
 #pragma clang diagnostic ignored "-Wunreachable-code"
     NSString *annotationKey = &UIApplicationOpenURLOptionsAnnotationKey != NULL ? UIApplicationOpenURLOptionsAnnotationKey : @"UIApplicationOpenURLOptionsAnnotationKey";
     NSString *sourceAppKey = &UIApplicationOpenURLOptionsSourceApplicationKey != NULL ? UIApplicationOpenURLOptionsSourceApplicationKey : @"UIApplicationOpenURLOptionsSourceApplicationKey" ;
 #pragma clang diagnostic pop
-
-    [appsFlyerTracker handleOpenURL:url
-                  sourceApplication:options[sourceAppKey]
-                      withAnnotation:options[annotationKey]];
-
-    MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
-    return execStatus;
-}
-
-- (nonnull MPKitExecStatus *)openURL:(nonnull NSURL *)url sourceApplication:(nullable NSString *)sourceApplication annotation:(nullable id)annotation {
-    [appsFlyerTracker handleOpenURL:url sourceApplication:sourceApplication withAnnotation:annotation];
+    NSMutableDictionary *options = [NSMutableDictionary dictionaryWithCapacity:2];
+    if (sourceApplication) {
+        options[sourceAppKey] = sourceApplication;
+    }
+    if (annotation) {
+        options[annotationKey] = annotation;
+    }
+    [appsFlyerTracker handleOpenUrl:url options:options];
+    
     MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
     return execStatus;
 }
