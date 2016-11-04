@@ -97,20 +97,9 @@ static AppsFlyerTracker *appsFlyerTracker = nil;
 
 - (nonnull MPKitExecStatus *)openURL:(nonnull NSURL *)url sourceApplication:(nullable NSString *)sourceApplication annotation:(nullable id)annotation {
 #pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wtautological-pointer-compare"
-#pragma clang diagnostic ignored "-Wunreachable-code"
-    NSString *annotationKey = &UIApplicationOpenURLOptionsAnnotationKey != NULL ? UIApplicationOpenURLOptionsAnnotationKey : @"UIApplicationOpenURLOptionsAnnotationKey";
-    NSString *sourceAppKey = &UIApplicationOpenURLOptionsSourceApplicationKey != NULL ? UIApplicationOpenURLOptionsSourceApplicationKey : @"UIApplicationOpenURLOptionsSourceApplicationKey" ;
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    [appsFlyerTracker handleOpenURL:url sourceApplication:sourceApplication withAnnotation:annotation];
 #pragma clang diagnostic pop
-    NSMutableDictionary *options = [NSMutableDictionary dictionaryWithCapacity:2];
-    if (sourceApplication) {
-        options[sourceAppKey] = sourceApplication;
-    }
-    if (annotation) {
-        options[annotationKey] = annotation;
-    }
-    [appsFlyerTracker handleOpenUrl:url options:options];
-    
     MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
     return execStatus;
 }
