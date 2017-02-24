@@ -73,7 +73,7 @@ static AppsFlyerTracker *appsFlyerTracker = nil;
                                                             object:nil
                                                           userInfo:userInfo];
     });
-    
+
     NSString *appsFlyerUID = (NSString *) [[AppsFlyerTracker sharedTracker] getAppsFlyerUID];
     if (appsFlyerUID){
         NSDictionary<NSString *, NSString *> *integrationAttributes = @{afAppsFlyerIdIntegrationKey:appsFlyerUID};
@@ -174,49 +174,45 @@ static AppsFlyerTracker *appsFlyerTracker = nil;
             values[kMPKAFCustomerUserId] = customerUserId;
         }
 
+        NSString *appsFlyerEventName = nil;
         if (action == MPCommerceEventActionAddToCart || action == MPCommerceEventActionAddToWishList) {
             NSArray<MPProduct *> *products = commerceEvent.products;
+            NSMutableDictionary *productValues = nil;
+            NSUInteger initialForwardCount = [products count] > 0 ? 0 : 1;
+            execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess forwardCount:initialForwardCount];
+            appsFlyerEventName = action == MPCommerceEventActionAddToCart ? AFEventAddToCart : AFEventAddToWishlist;
 
-            if (products && [products count] != 0) {
-                execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess forwardCount:0];
-                NSString *appsFlyerEventName = action == MPCommerceEventActionAddToCart ? AFEventAddToCart : AFEventAddToWishlist;
-
-                for (MPProduct *product in products) {
-                    NSMutableDictionary *productValues = [values mutableCopy];
-                    if (product.price) {
-                        productValues[AFEventParamPrice] = product.price;
-                    }
-
-                    if (product.quantity) {
-                        productValues[AFEventParamQuantity] = product.quantity;
-                    }
-
-                    if (product.sku) {
-                        productValues[AFEventParamContentId] = product.sku;
-                    }
-
-                    if (product.category) {
-                        productValues[AFEventParamContentType] = product.category;
-                    }
-
-                    [appsFlyerTracker trackEvent:appsFlyerEventName withValues:productValues];
-                    [execStatus incrementForwardCount];
+            for (MPProduct *product in products) {
+                productValues = [values mutableCopy];
+                if (product.price) {
+                    productValues[AFEventParamPrice] = product.price;
                 }
-            }
-            else {
-                execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeRequirementsNotMet];
+
+                if (product.quantity) {
+                    productValues[AFEventParamQuantity] = product.quantity;
+                }
+
+                if (product.sku) {
+                    productValues[AFEventParamContentId] = product.sku;
+                }
+
+                if (product.category) {
+                    productValues[AFEventParamContentType] = product.category;
+                }
+
+                [appsFlyerTracker trackEvent:appsFlyerEventName withValues:productValues ? productValues : values];
+                [execStatus incrementForwardCount];
             }
         } else {
             execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
-            NSString *appsFlyerEventName = action == MPCommerceEventActionCheckout ? AFEventInitiatedCheckout : AFEventPurchase;
+            appsFlyerEventName = action == MPCommerceEventActionCheckout ? AFEventInitiatedCheckout : AFEventPurchase;
             if (commerceEvent.count) {
                 values[AFEventParamQuantity] = @(commerceEvent.count);
             }
 
-            NSNumber *revenue = commerceEvent.transactionAttributes.revenue;
-            if (revenue) {
+            if (commerceEvent.transactionAttributes.revenue) {
                 NSString *appsFlyerParamName = MPCommerceEventActionPurchase ? AFEventParamRevenue : AFEventParamPrice;
-                values[appsFlyerParamName] = revenue;
+                values[appsFlyerParamName] = commerceEvent.transactionAttributes.revenue;
             }
 
             [appsFlyerTracker trackEvent:appsFlyerEventName withValues:values];
