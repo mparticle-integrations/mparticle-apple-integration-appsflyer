@@ -211,7 +211,7 @@ static AppsFlyerTracker *appsFlyerTracker = nil;
             }
 
             if (commerceEvent.transactionAttributes.revenue) {
-                NSString *appsFlyerParamName = MPCommerceEventActionPurchase ? AFEventParamRevenue : AFEventParamPrice;
+                NSString *appsFlyerParamName = action == MPCommerceEventActionPurchase ? AFEventParamRevenue : AFEventParamPrice;
                 values[appsFlyerParamName] = commerceEvent.transactionAttributes.revenue;
             }
 
