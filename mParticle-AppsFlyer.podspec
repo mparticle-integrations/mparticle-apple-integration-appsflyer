@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name             = "mParticle-AppsFlyer"
-    s.version          = "6.12.4"
+    s.version          = "6.12.6"
     s.summary          = "AppsFlyer integration for mParticle"
 
     s.description      = <<-DESC
@@ -15,6 +15,6 @@ Pod::Spec.new do |s|
 
     s.ios.deployment_target = "8.0"
     s.ios.source_files      = 'mParticle-AppsFlyer/*.{h,m,mm}'
-    s.ios.dependency 'mParticle-Apple-SDK/mParticle', '~> 6.12.3'
+    s.ios.dependency 'mParticle-Apple-SDK/mParticle', '~> 6.12.6'
     s.ios.dependency 'AppsFlyerFramework', '4.5.9'
 end
