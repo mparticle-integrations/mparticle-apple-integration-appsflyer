@@ -19,6 +19,8 @@
 #import "MPKitAppsFlyer.h"
 #if defined(__has_include) && __has_include(<AppsFlyerTracker/AppsFlyerTracker.h>)
 #import <AppsFlyerTracker/AppsFlyerTracker.h>
+#elif defined(__has_include) && __has_include(<AppsFlyerLib/AppsFlyerTracker.h>)
+#import <AppsFlyerLib/AppsFlyerTracker.h>
 #else
 #import "AppsFlyerTracker.h"
 #endif
