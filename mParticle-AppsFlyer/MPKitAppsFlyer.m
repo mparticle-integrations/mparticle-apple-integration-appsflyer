@@ -76,7 +76,7 @@ static AppsFlyerTracker *appsFlyerTracker = nil;
                                                           userInfo:userInfo];
     });
 
-    NSString *appsFlyerUID = (NSString *) [[AppsFlyerTracker sharedTracker] getAppsFlyerUID];
+    NSString *appsFlyerUID = (NSString *) [appsFlyerTracker getAppsFlyerUID];
     if (appsFlyerUID){
         NSDictionary<NSString *, NSString *> *integrationAttributes = @{afAppsFlyerIdIntegrationKey:appsFlyerUID};
         [[MParticle sharedInstance] setIntegrationAttributes:integrationAttributes forKit:[[self class] kitCode]];
@@ -86,7 +86,7 @@ static AppsFlyerTracker *appsFlyerTracker = nil;
 }
 
 - (nonnull MPKitExecStatus *)didBecomeActive {
-    [[AppsFlyerTracker sharedTracker] trackAppLaunch];
+    [appsFlyerTracker trackAppLaunch];
     MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
     return execStatus;
 }
@@ -107,13 +107,13 @@ static AppsFlyerTracker *appsFlyerTracker = nil;
 }
 
 - (nonnull MPKitExecStatus *)continueUserActivity:(nonnull NSUserActivity *)userActivity restorationHandler:(void(^ _Nonnull)(NSArray * _Nullable restorableObjects))restorationHandler {
-    [[AppsFlyerTracker sharedTracker] continueUserActivity:userActivity restorationHandler:restorationHandler];
+    [appsFlyerTracker continueUserActivity:userActivity restorationHandler:restorationHandler];
     MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
     return execStatus;
 }
 
 - (nonnull MPKitExecStatus *)didUpdateUserActivity:(nonnull NSUserActivity *)userActivity {
-    [[AppsFlyerTracker sharedTracker] didUpdateUserActivity:userActivity];
+    [appsFlyerTracker didUpdateUserActivity:userActivity];
     MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
     return execStatus;
 }
