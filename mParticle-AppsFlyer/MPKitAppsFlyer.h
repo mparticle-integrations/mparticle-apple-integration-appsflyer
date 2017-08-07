@@ -28,4 +28,5 @@
 @property (nonatomic, strong, nonnull) NSDictionary *configuration;
 @property (nonatomic, unsafe_unretained, readonly) BOOL started;
 
++ (void)setDelegate:(id _Nonnull)delegate;
 @end

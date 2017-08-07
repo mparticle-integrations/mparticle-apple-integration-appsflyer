@@ -36,8 +36,22 @@ NSString *const afAppsFlyerIdIntegrationKey = @"appsflyer_id_integration_setting
 NSString *const kMPKAFCustomerUserId = @"af_customer_user_id";
 
 static AppsFlyerTracker *appsFlyerTracker = nil;
+static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
 
 @implementation MPKitAppsFlyer
+
+- (id)providerKitInstance {
+    return appsFlyerTracker;
+}
+
++ (void)setDelegate:(id)delegate {
+    if (appsFlyerTracker) {
+        appsFlyerTracker.delegate = (id<AppsFlyerTrackerDelegate>)delegate;
+    }
+    else {
+        temporaryDelegate = (id<AppsFlyerTrackerDelegate>)delegate;
+    }
+}
 
 + (NSNumber *)kitCode {
     return @92;
@@ -59,6 +73,10 @@ static AppsFlyerTracker *appsFlyerTracker = nil;
     appsFlyerTracker = [AppsFlyerTracker sharedTracker];
     appsFlyerTracker.appleAppID = appleAppId;
     appsFlyerTracker.appsFlyerDevKey = devKey;
+    if (temporaryDelegate) {
+        appsFlyerTracker.delegate = temporaryDelegate;
+        temporaryDelegate = nil;
+    }
 
     _configuration = configuration;
     _started = startImmediately;
