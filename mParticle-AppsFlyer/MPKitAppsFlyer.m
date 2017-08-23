@@ -40,6 +40,8 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
 
 @implementation MPKitAppsFlyer
 
+@synthesize kitApi = _kitApi;
+
 - (id)providerKitInstance {
     return appsFlyerTracker;
 }
@@ -177,6 +179,15 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
 
 - (nonnull MPKitExecStatus *)logCommerceEvent:(nonnull MPCommerceEvent *)commerceEvent {
     MPKitExecStatus *execStatus;
+    
+    // If a customer id is available, add it to the commerce event user defined attributes
+    NSString *customerId = _kitApi.userIdentities[@(MPUserIdentityCustomerId)];
+    if (customerId.length) {
+        MPCommerceEvent *surrogateCommerceEvent = [commerceEvent copy];
+        surrogateCommerceEvent.userDefinedAttributes[kMPKAFCustomerUserId] = customerId;
+        commerceEvent = surrogateCommerceEvent;
+    }
+    
     MPCommerceEventAction action = commerceEvent.action;
 
     if (action == MPCommerceEventActionAddToCart ||
@@ -257,6 +268,17 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
 }
 
 - (nonnull MPKitExecStatus *)logEvent:(nonnull MPEvent *)event {
+    
+    // If a customer id is available, add it to the event attributes
+    NSString *customerId = _kitApi.userIdentities[@(MPUserIdentityCustomerId)];
+    if (customerId.length) {
+        MPEvent *surrogateEvent = [event copy];
+        NSMutableDictionary *mutableInfo = [surrogateEvent.info mutableCopy];
+        mutableInfo[kMPKAFCustomerUserId] = customerId;
+        surrogateEvent.info = mutableInfo;
+        event = surrogateEvent;
+    }
+    
     NSString *eventName = event.name;
     NSDictionary *eventValues = event.info;
     [appsFlyerTracker trackEvent:eventName withValues:eventValues];
