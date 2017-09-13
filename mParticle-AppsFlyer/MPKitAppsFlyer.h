@@ -23,6 +23,10 @@
 #import "mParticle.h"
 #endif
 
+extern NSString * _Nonnull const MPKitAppsFlyerAttributionResultKey;
+extern NSString * _Nonnull const MPKitAppsFlyerErrorKey;
+extern NSString * _Nonnull const MPKitAppsFlyerErrorDomain;
+
 @interface MPKitAppsFlyer : NSObject <MPKitProtocol>
 
 @property (nonatomic, strong, nonnull) NSDictionary *configuration;

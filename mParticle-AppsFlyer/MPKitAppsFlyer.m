@@ -30,6 +30,10 @@
     #import <UserNotifications/UNUserNotificationCenter.h>
 #endif
 
+NSString *const MPKitAppsFlyerAttributionResultKey = @"mParticle-AppsFlyer Attribution Result";
+NSString *const MPKitAppsFlyerErrorKey = @"mParticle-AppsFlyer Error";
+NSString *const MPKitAppsFlyerErrorDomain = @"mParticle-AppsFlyer";
+
 NSString *const afAppleAppId = @"appleAppId";
 NSString *const afDevKey = @"devKey";
 NSString *const afAppsFlyerIdIntegrationKey = @"appsflyer_id_integration_setting";
@@ -37,6 +41,14 @@ NSString *const kMPKAFCustomerUserId = @"af_customer_user_id";
 
 static AppsFlyerTracker *appsFlyerTracker = nil;
 static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
+
+@interface MPKitAppsFlyer() <AppsFlyerTrackerDelegate> {
+    NSDictionary *temporaryParams;
+    NSError *temporaryError;
+    void (^completionHandlerCopy)(NSDictionary *, NSError *);
+}
+
+@end
 
 @implementation MPKitAppsFlyer
 
@@ -48,6 +60,14 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
 
 + (void)setDelegate:(id)delegate {
     if (appsFlyerTracker) {
+        if (appsFlyerTracker.delegate) {
+            NSLog(@"Warning: AppsFlyer delegate can not be set because it is already in use by kit. \
+                  If you'd like to set your own delegate, please do so before you initialize mParticle.\
+                  Note: When setting your own delegate, you will not be able to use \
+                  `checkForDeferredDeepLinkWithCompletionHandler`.");
+            return;
+        }
+        
         appsFlyerTracker.delegate = (id<AppsFlyerTrackerDelegate>)delegate;
     }
     else {
@@ -71,6 +91,10 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
     if (!self || !appleAppId || !devKey) {
         return nil;
     }
+    
+    temporaryParams = nil;
+    temporaryError = nil;
+    completionHandlerCopy = nil;
 
     appsFlyerTracker = [AppsFlyerTracker sharedTracker];
     appsFlyerTracker.appleAppID = appleAppId;
@@ -78,6 +102,9 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
     if (temporaryDelegate) {
         appsFlyerTracker.delegate = temporaryDelegate;
         temporaryDelegate = nil;
+    }
+    else {
+        appsFlyerTracker.delegate = self;
     }
 
     _configuration = configuration;
@@ -290,6 +317,66 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
     appsFlyerTracker.deviceTrackingDisabled = optOut;
     MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
     return execStatus;
+}
+
+- (NSError *)errorWithMessage:(NSString *)message {
+    NSError *error = [NSError errorWithDomain:MPKitAppsFlyerErrorDomain code:0 userInfo:@{MPKitAppsFlyerErrorKey:message}];
+    return error;
+}
+
+- (void)completeWithStoredResults {
+    if (completionHandlerCopy) {
+        if (temporaryError) {
+            completionHandlerCopy(nil, temporaryError);
+        }
+        else {
+            if (temporaryParams) {
+                NSDictionary *outerDictionary = @{MPKitAppsFlyerAttributionResultKey:temporaryParams};
+                completionHandlerCopy(outerDictionary, nil);
+            }
+        }
+        completionHandlerCopy = nil;
+        temporaryParams = nil;
+        temporaryError = nil;
+    }
+}
+
+- (nonnull MPKitExecStatus *)checkForDeferredDeepLinkWithCompletionHandler:(void(^ _Nonnull)(NSDictionary * _Nullable linkInfo, NSError * _Nullable error))completionHandler {
+    
+    MPKitExecStatus *execStatus = nil;
+    completionHandlerCopy = [completionHandler copy];
+    
+    if (appsFlyerTracker.delegate != self) {
+        temporaryError = [self errorWithMessage:@"Unable to check for deep link because a custom AppsFlyer delegate has been set."];
+        [self completeWithStoredResults];
+        execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeRequirementsNotMet];
+        return execStatus;
+    }
+    
+    if (completionHandlerCopy && (temporaryParams || temporaryError)) {
+        [self completeWithStoredResults];
+    }
+    else {
+        temporaryParams = nil;
+        temporaryError = nil;
+    }
+    
+    execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
+    return execStatus;
+}
+
+- (void)onConversionDataReceived:(NSDictionary *)installData {
+    if (!installData) {
+        temporaryError = [self errorWithMessage:@"Attribution result was received but was a nil dictionary."];
+    }
+    temporaryParams = installData;
+    [self completeWithStoredResults];
+    
+}
+
+- (void)onConversionDataRequestFailure:(NSError *)error {
+    temporaryError = error;
+    [self completeWithStoredResults];
 }
 
 @end
