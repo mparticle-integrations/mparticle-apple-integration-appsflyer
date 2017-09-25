@@ -31,6 +31,7 @@
 #endif
 
 NSString *const MPKitAppsFlyerAttributionResultKey = @"mParticle-AppsFlyer Attribution Result";
+NSString *const MPKitAppsFlyerAppOpenResultKey = @"mParticle-AppsFlyer App Open Result";
 NSString *const MPKitAppsFlyerErrorKey = @"mParticle-AppsFlyer Error";
 NSString *const MPKitAppsFlyerErrorDomain = @"mParticle-AppsFlyer";
 
@@ -44,6 +45,7 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
 
 @interface MPKitAppsFlyer() <AppsFlyerTrackerDelegate> {
     NSDictionary *temporaryParams;
+    NSDictionary *temporaryAppOpenParams;
     NSError *temporaryError;
     void (^completionHandlerCopy)(NSDictionary *, NSError *);
 }
@@ -93,6 +95,7 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
     }
     
     temporaryParams = nil;
+    temporaryAppOpenParams = nil;
     temporaryError = nil;
     completionHandlerCopy = nil;
 
@@ -328,16 +331,22 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
     if (completionHandlerCopy) {
         if (temporaryError) {
             completionHandlerCopy(nil, temporaryError);
+            temporaryError = nil;
         }
         else {
+            NSMutableDictionary *outerDictionary = [NSMutableDictionary dictionary];
             if (temporaryParams) {
-                NSDictionary *outerDictionary = @{MPKitAppsFlyerAttributionResultKey:temporaryParams};
+                [outerDictionary setObject:temporaryParams forKey:MPKitAppsFlyerAttributionResultKey];
+                temporaryParams = nil;
+            }
+            if (temporaryAppOpenParams) {
+                [outerDictionary setObject:temporaryAppOpenParams forKey:MPKitAppsFlyerAppOpenResultKey];
+                temporaryAppOpenParams = nil;
+            }
+            if (outerDictionary.count) {
                 completionHandlerCopy(outerDictionary, nil);
             }
         }
-        completionHandlerCopy = nil;
-        temporaryParams = nil;
-        temporaryError = nil;
     }
 }
 
@@ -353,11 +362,12 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
         return execStatus;
     }
     
-    if (completionHandlerCopy && (temporaryParams || temporaryError)) {
+    if (completionHandlerCopy && (temporaryParams || temporaryAppOpenParams || temporaryError)) {
         [self completeWithStoredResults];
     }
     else {
         temporaryParams = nil;
+        temporaryAppOpenParams = nil;
         temporaryError = nil;
     }
     
@@ -375,6 +385,16 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
 }
 
 - (void)onConversionDataRequestFailure:(NSError *)error {
+    temporaryError = error;
+    [self completeWithStoredResults];
+}
+
+- (void)onAppOpenAttribution:(NSDictionary *)attributionData {
+    temporaryAppOpenParams = attributionData;
+    [self completeWithStoredResults];
+}
+
+- (void)onAppOpenAttributionFailure:(NSError *)error {
     temporaryError = error;
     [self completeWithStoredResults];
 }

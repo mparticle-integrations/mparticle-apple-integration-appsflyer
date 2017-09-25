@@ -24,6 +24,7 @@
 #endif
 
 extern NSString * _Nonnull const MPKitAppsFlyerAttributionResultKey;
+extern NSString * _Nonnull const MPKitAppsFlyerAppOpenResultKey;
 extern NSString * _Nonnull const MPKitAppsFlyerErrorKey;
 extern NSString * _Nonnull const MPKitAppsFlyerErrorDomain;
 
