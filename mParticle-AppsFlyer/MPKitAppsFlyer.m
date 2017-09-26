@@ -277,7 +277,7 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
                 if (action == MPCommerceEventActionPurchase) {
                     values[AFEventParamRevenue] = transactionAttributes.revenue;
                     if (transactionAttributes.transactionId.length) {
-                        values[AFEventOrderId] = transactionAttributes.transactionId;
+                        values[AFEventParamOrderId] = transactionAttributes.transactionId;
                     }
                 } else {
                     values[AFEventParamPrice] = transactionAttributes.revenue;
