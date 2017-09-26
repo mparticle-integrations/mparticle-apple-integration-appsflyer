@@ -30,6 +30,7 @@
     #import <UserNotifications/UNUserNotificationCenter.h>
 #endif
 
+NSString *const MPKitAppsFlyerConversionResultKey = @"mParticle-AppsFlyer Attribution Result";
 NSString *const MPKitAppsFlyerAttributionResultKey = @"mParticle-AppsFlyer Attribution Result";
 NSString *const MPKitAppsFlyerAppOpenResultKey = @"mParticle-AppsFlyer App Open Result";
 NSString *const MPKitAppsFlyerErrorKey = @"mParticle-AppsFlyer Error";
@@ -336,7 +337,7 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
         else {
             NSMutableDictionary *outerDictionary = [NSMutableDictionary dictionary];
             if (temporaryParams) {
-                [outerDictionary setObject:temporaryParams forKey:MPKitAppsFlyerAttributionResultKey];
+                [outerDictionary setObject:temporaryParams forKey:MPKitAppsFlyerConversionResultKey];
                 temporaryParams = nil;
             }
             if (temporaryAppOpenParams) {

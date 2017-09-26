@@ -23,7 +23,7 @@
 #import "mParticle.h"
 #endif
 
-extern NSString * _Nonnull const MPKitAppsFlyerAttributionResultKey;
+extern NSString * _Nonnull const MPKitAppsFlyerConversionResultKey;
 extern NSString * _Nonnull const MPKitAppsFlyerAppOpenResultKey;
 extern NSString * _Nonnull const MPKitAppsFlyerErrorKey;
 extern NSString * _Nonnull const MPKitAppsFlyerErrorDomain;
@@ -35,3 +35,5 @@ extern NSString * _Nonnull const MPKitAppsFlyerErrorDomain;
 
 + (void)setDelegate:(id _Nonnull)delegate;
 @end
+
+extern NSString * _Nonnull const MPKitAppsFlyerAttributionResultKey __deprecated_msg("Use MPKitAppsFlyerConversionResultKey instead.");
