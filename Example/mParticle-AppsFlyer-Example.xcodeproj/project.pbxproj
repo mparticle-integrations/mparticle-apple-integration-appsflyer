@@ -637,10 +637,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "mParticle-AppsFlyer-Example/mParticle-AppsFlyer-Example.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 9RE44VD454;
+				DEVELOPMENT_TEAM = DLD43Y3TRP;
 				INFOPLIST_FILE = "mParticle-AppsFlyer-Example/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.mparticle.appsflyer.example;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mparticle.example.kit.appsflyer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -654,10 +654,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "mParticle-AppsFlyer-Example/mParticle-AppsFlyer-Example.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 9RE44VD454;
+				DEVELOPMENT_TEAM = DLD43Y3TRP;
 				INFOPLIST_FILE = "mParticle-AppsFlyer-Example/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.mparticle.appsflyer.example;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mparticle.example.kit.appsflyer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

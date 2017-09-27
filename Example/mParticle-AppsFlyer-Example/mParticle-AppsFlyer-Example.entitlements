@@ -4,7 +4,7 @@
 <dict>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:mparticle.test.onelink.me</string>
+		<string>applinks:mparticle.onelink.me</string>
 	</array>
 </dict>
 </plist>

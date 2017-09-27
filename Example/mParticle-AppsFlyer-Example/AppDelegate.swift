@@ -1,19 +1,25 @@
 import UIKit
 import mParticle_Apple_SDK
+import mParticle_AppsFlyer
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         MParticle.sharedInstance().start(withKey: "REPLACEME", secret: "REPLACEME")
         MParticle.sharedInstance().logLevel = .verbose
+        
         MParticle.sharedInstance().checkForDeferredDeepLink { (linkInfo, error) in
-            print("result: linkInfo=%@ error=%@", linkInfo ?? "(null)", error ?? "(null)")
+            if (linkInfo?[MPKitAppsFlyerConversionResultKey] != nil) {
+                print("result: onConversionDataReceived=%@ error=%@", linkInfo ?? "(null)", error ?? "(null)")
+            }else if (linkInfo?[MPKitAppsFlyerAppOpenResultKey] != nil) {
+                print("result: onAppOpenAttribution=%@ error=%@", linkInfo ?? "(null)", error ?? "(null)")
+            }
         }
+        
         return true
     }
 
