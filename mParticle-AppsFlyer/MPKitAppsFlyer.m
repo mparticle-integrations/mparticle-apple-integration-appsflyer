@@ -44,13 +44,7 @@ NSString *const kMPKAFCustomerUserId = @"af_customer_user_id";
 static AppsFlyerTracker *appsFlyerTracker = nil;
 static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
 
-@interface MPKitAppsFlyer() <AppsFlyerTrackerDelegate> {
-    NSDictionary *temporaryParams;
-    NSDictionary *temporaryAppOpenParams;
-    NSError *temporaryError;
-    void (^completionHandlerCopy)(NSDictionary *, NSError *);
-}
-
+@interface MPKitAppsFlyer() <AppsFlyerTrackerDelegate>
 @end
 
 @implementation MPKitAppsFlyer
@@ -67,7 +61,7 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
             NSLog(@"Warning: AppsFlyer delegate can not be set because it is already in use by kit. \
                   If you'd like to set your own delegate, please do so before you initialize mParticle.\
                   Note: When setting your own delegate, you will not be able to use \
-                  `checkForDeferredDeepLinkWithCompletionHandler`.");
+                  `onDeeplinkComplete`.");
             return;
         }
         
@@ -94,11 +88,6 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
     if (!self || !appleAppId || !devKey) {
         return nil;
     }
-    
-    temporaryParams = nil;
-    temporaryAppOpenParams = nil;
-    temporaryError = nil;
-    completionHandlerCopy = nil;
 
     appsFlyerTracker = [AppsFlyerTracker sharedTracker];
     appsFlyerTracker.appleAppID = appleAppId;
@@ -328,76 +317,34 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
     return error;
 }
 
-- (void)completeWithStoredResults {
-    if (completionHandlerCopy) {
-        if (temporaryError) {
-            completionHandlerCopy(nil, temporaryError);
-            temporaryError = nil;
-        }
-        else {
-            NSMutableDictionary *outerDictionary = [NSMutableDictionary dictionary];
-            if (temporaryParams) {
-                [outerDictionary setObject:temporaryParams forKey:MPKitAppsFlyerConversionResultKey];
-                temporaryParams = nil;
-            }
-            if (temporaryAppOpenParams) {
-                [outerDictionary setObject:temporaryAppOpenParams forKey:MPKitAppsFlyerAppOpenResultKey];
-                temporaryAppOpenParams = nil;
-            }
-            if (outerDictionary.count) {
-                completionHandlerCopy(outerDictionary, nil);
-            }
-        }
-    }
-}
-
-- (nonnull MPKitExecStatus *)checkForDeferredDeepLinkWithCompletionHandler:(void(^ _Nonnull)(NSDictionary * _Nullable linkInfo, NSError * _Nullable error))completionHandler {
-    
-    MPKitExecStatus *execStatus = nil;
-    completionHandlerCopy = [completionHandler copy];
-    
-    if (appsFlyerTracker.delegate != self) {
-        temporaryError = [self errorWithMessage:@"Unable to check for deep link because a custom AppsFlyer delegate has been set."];
-        [self completeWithStoredResults];
-        execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeRequirementsNotMet];
-        return execStatus;
-    }
-    
-    if (completionHandlerCopy && (temporaryParams || temporaryAppOpenParams || temporaryError)) {
-        [self completeWithStoredResults];
-    }
-    else {
-        temporaryParams = nil;
-        temporaryAppOpenParams = nil;
-        temporaryError = nil;
-    }
-    
-    execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
-    return execStatus;
-}
-
 - (void)onConversionDataReceived:(NSDictionary *)installData {
     if (!installData) {
-        temporaryError = [self errorWithMessage:@"Attribution result was received but was a nil dictionary."];
+        [_kitApi onDeeplinkCompleteWithInfo:nil error:[self errorWithMessage:@"Received nil installData from AppsFlyer"]];
+        return;
     }
-    temporaryParams = installData;
-    [self completeWithStoredResults];
     
+    NSMutableDictionary *outerDictionary = [NSMutableDictionary dictionary];
+    outerDictionary[MPKitAppsFlyerConversionResultKey] = installData;
+    [_kitApi onDeeplinkCompleteWithInfo:outerDictionary error:nil];
 }
 
 - (void)onConversionDataRequestFailure:(NSError *)error {
-    temporaryError = error;
-    [self completeWithStoredResults];
+    [_kitApi onDeeplinkCompleteWithInfo:nil error:error];
 }
 
 - (void)onAppOpenAttribution:(NSDictionary *)attributionData {
-    temporaryAppOpenParams = attributionData;
-    [self completeWithStoredResults];
+    if (!attributionData) {
+        [_kitApi onDeeplinkCompleteWithInfo:nil error:[self errorWithMessage:@"Received nil attributionData from AppsFlyer"]];
+        return;
+    }
+    
+    NSMutableDictionary *outerDictionary = [NSMutableDictionary dictionary];
+    outerDictionary[MPKitAppsFlyerAppOpenResultKey] = attributionData;
+    [_kitApi onDeeplinkCompleteWithInfo:outerDictionary error:nil];
 }
 
 - (void)onAppOpenAttributionFailure:(NSError *)error {
-    temporaryError = error;
-    [self completeWithStoredResults];
+    [_kitApi onDeeplinkCompleteWithInfo:nil error:error];
 }
 
 @end

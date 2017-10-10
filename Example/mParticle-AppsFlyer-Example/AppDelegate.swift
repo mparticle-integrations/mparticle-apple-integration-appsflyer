@@ -9,16 +9,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        MParticle.sharedInstance().start(withKey: "REPLACEME", secret: "REPLACEME")
-        MParticle.sharedInstance().logLevel = .verbose
-        
-        MParticle.sharedInstance().checkForDeferredDeepLink { (linkInfo, error) in
-            if (linkInfo?[MPKitAppsFlyerConversionResultKey] != nil) {
-                print("result: onConversionDataReceived=%@ error=%@", linkInfo ?? "(null)", error ?? "(null)")
-            }else if (linkInfo?[MPKitAppsFlyerAppOpenResultKey] != nil) {
-                print("result: onAppOpenAttribution=%@ error=%@", linkInfo ?? "(null)", error ?? "(null)")
+        let options = MParticleOptions(key: "REPLACEME", secret: "REPLACEME")
+        options.onDeeplinkComplete = { context, deeplinkResult, error in
+            if let error = error {
+                print("Deeplink fetching for kitName=\(context.kitName) failed with error=\(error)");
+                return;
+            }
+            
+            if let deeplinkResult = deeplinkResult {
+                let linkInfo = deeplinkResult.linkInfo;
+                
+                if let conversionResult = linkInfo[MPKitAppsFlyerConversionResultKey] {
+                    print("result: onConversionDataReceived=\(conversionResult)")
+                } else if let appOpenResult = linkInfo[MPKitAppsFlyerAppOpenResultKey] {
+                    print("result: onAppOpenAttribution=\(appOpenResult)")
+                }
             }
         }
+        MParticle.sharedInstance().start(with: options);
+        MParticle.sharedInstance().logLevel = .verbose
         
         return true
     }
