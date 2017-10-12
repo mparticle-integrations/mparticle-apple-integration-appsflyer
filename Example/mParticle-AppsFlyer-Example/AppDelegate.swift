@@ -10,14 +10,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         let options = MParticleOptions(key: "REPLACEME", secret: "REPLACEME")
-        options.onDeeplinkComplete = { context, deeplinkResult, error in
-            if let error = error {
-                print("Deeplink fetching for kitName=\(context.kitName) failed with error=\(error)");
+        options.onAttributionComplete = { attributionResult, error in
+            if let swiftError = error {
+                let error = swiftError as NSError
+                if let kitCode = error.userInfo[mParticleKitInstanceKey] {
+                    print("attribution fetching for kitCode=\(kitCode)) failed with error=\(error)");
+                }
+                
                 return;
             }
             
-            if let deeplinkResult = deeplinkResult {
-                let linkInfo = deeplinkResult.linkInfo;
+            if let attributionResult = attributionResult {
+                let linkInfo = attributionResult.linkInfo;
                 
                 if let conversionResult = linkInfo[MPKitAppsFlyerConversionResultKey] {
                     print("result: onConversionDataReceived=\(conversionResult)")

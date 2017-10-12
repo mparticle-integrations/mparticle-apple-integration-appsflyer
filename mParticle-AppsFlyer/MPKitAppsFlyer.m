@@ -61,7 +61,7 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
             NSLog(@"Warning: AppsFlyer delegate can not be set because it is already in use by kit. \
                   If you'd like to set your own delegate, please do so before you initialize mParticle.\
                   Note: When setting your own delegate, you will not be able to use \
-                  `onDeeplinkComplete`.");
+                  `onAttributionComplete`.");
             return;
         }
         
@@ -321,32 +321,40 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
 
 - (void)onConversionDataReceived:(NSDictionary *)installData {
     if (!installData) {
-        [_kitApi onDeeplinkCompleteWithInfo:nil error:[self errorWithMessage:@"Received nil installData from AppsFlyer"]];
+        [_kitApi onAttributionCompleteWithResult:nil error:[self errorWithMessage:@"Received nil installData from AppsFlyer"]];
         return;
     }
     
     NSMutableDictionary *outerDictionary = [NSMutableDictionary dictionary];
     outerDictionary[MPKitAppsFlyerConversionResultKey] = installData;
-    [_kitApi onDeeplinkCompleteWithInfo:outerDictionary error:nil];
+
+    MPAttributionResult *attributionResult = [[MPAttributionResult alloc] init];
+    attributionResult.linkInfo = outerDictionary;
+
+    [_kitApi onAttributionCompleteWithResult:attributionResult error:nil];
 }
 
 - (void)onConversionDataRequestFailure:(NSError *)error {
-    [_kitApi onDeeplinkCompleteWithInfo:nil error:error];
+    [_kitApi onAttributionCompleteWithResult:nil error:error];
 }
 
 - (void)onAppOpenAttribution:(NSDictionary *)attributionData {
     if (!attributionData) {
-        [_kitApi onDeeplinkCompleteWithInfo:nil error:[self errorWithMessage:@"Received nil attributionData from AppsFlyer"]];
+        [_kitApi onAttributionCompleteWithResult:nil error:[self errorWithMessage:@"Received nil attributionData from AppsFlyer"]];
         return;
     }
     
     NSMutableDictionary *outerDictionary = [NSMutableDictionary dictionary];
     outerDictionary[MPKitAppsFlyerAppOpenResultKey] = attributionData;
-    [_kitApi onDeeplinkCompleteWithInfo:outerDictionary error:nil];
+
+    MPAttributionResult *attributionResult = [[MPAttributionResult alloc] init];
+    attributionResult.linkInfo = outerDictionary;
+
+    [_kitApi onAttributionCompleteWithResult:attributionResult error:nil];
 }
 
 - (void)onAppOpenAttributionFailure:(NSError *)error {
-    [_kitApi onDeeplinkCompleteWithInfo:nil error:error];
+    [_kitApi onAttributionCompleteWithResult:nil error:error];
 }
 
 @end
