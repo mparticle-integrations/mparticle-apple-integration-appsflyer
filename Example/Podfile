@@ -10,7 +10,6 @@ target 'mParticle-AppsFlyer-Example' do
   use_frameworks!
 
   # Pods for mParticle-AppsFlyer-Example
-  pod 'mParticle-Apple-SDK', :path => '../../../sdk'
   pod 'mParticle-AppsFlyer', :path => '..'
 
   target 'mParticle-AppsFlyer-ExampleTests' do
