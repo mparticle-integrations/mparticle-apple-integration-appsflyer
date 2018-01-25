@@ -1,2 +1,2 @@
 github "AppsFlyerSDK/AppsFlyerFramework" == 4.8.0
-github "mparticle/mparticle-apple-sdk" ~> 7.0.0
+github "mparticle/mparticle-apple-sdk" ~> 7.1.0
