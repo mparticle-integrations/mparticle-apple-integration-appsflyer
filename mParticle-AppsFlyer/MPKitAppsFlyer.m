@@ -268,9 +268,7 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
         } else {
             execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
             appsFlyerEventName = action == MPCommerceEventActionCheckout ? AFEventInitiatedCheckout : AFEventPurchase;
-            if (commerceEvent.count) {
-                values[AFEventParamQuantity] = @(commerceEvent.count);
-            }
+            values[AFEventParamQuantity] = [MPKitAppsFlyer computeProductQuantity:commerceEvent];
 
             MPTransactionAttributes *transactionAttributes = commerceEvent.transactionAttributes;
             if (transactionAttributes.revenue.intValue) {
@@ -296,6 +294,22 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
         }
     }
     return execStatus;
+}
+
++ (nonnull NSNumber *) computeProductQuantity: (nullable MPCommerceEvent *) event {
+    int quantity = 0;
+    if ([event.products count] > 0) {
+        for (MPProduct *product in event.products) {
+            if ([product.quantity intValue] > 0){
+                quantity += [product.quantity intValue];
+            } else {
+                quantity += 1;
+            }
+        }
+    } else {
+        quantity = 1;
+    }
+    return [NSNumber numberWithInt:quantity];
 }
 
 - (nonnull MPKitExecStatus *)logEvent:(nonnull MPEvent *)event {

@@ -34,6 +34,7 @@ extern NSString * _Nonnull const MPKitAppsFlyerErrorDomain;
 @property (nonatomic, unsafe_unretained, readonly) BOOL started;
 
 + (void)setDelegate:(id _Nonnull)delegate;
++ (NSNumber * _Nonnull)computeProductQuantity:(nullable MPCommerceEvent *)event;
 @end
 
 extern NSString * _Nonnull const MPKitAppsFlyerAttributionResultKey __deprecated_msg("Use MPKitAppsFlyerConversionResultKey instead.");
