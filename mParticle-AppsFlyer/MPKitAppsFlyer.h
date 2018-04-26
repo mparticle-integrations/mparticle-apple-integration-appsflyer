@@ -32,6 +32,7 @@ extern NSString * _Nonnull const MPKitAppsFlyerErrorDomain;
 
 @property (nonatomic, strong, nonnull) NSDictionary *configuration;
 @property (nonatomic, unsafe_unretained, readonly) BOOL started;
+@property (nonatomic, strong, nullable) MPKitAPI *kitApi;
 
 + (void)setDelegate:(id _Nonnull)delegate;
 + (NSNumber * _Nonnull)computeProductQuantity:(nullable MPCommerceEvent *)event;
