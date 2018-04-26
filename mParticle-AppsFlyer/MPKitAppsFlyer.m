@@ -203,7 +203,8 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
     MPKitExecStatus *execStatus;
     
     // If a customer id is available, add it to the commerce event user defined attributes
-    NSString *customerId = _kitApi.userIdentities[@(MPUserIdentityCustomerId)];
+    FilteredMParticleUser *user = [self currentUser];
+    NSString *customerId = [user.userId stringValue];
     if (customerId.length) {
         MPCommerceEvent *surrogateCommerceEvent = [commerceEvent copy];
         surrogateCommerceEvent.userDefinedAttributes[kMPKAFCustomerUserId] = customerId;
@@ -306,7 +307,8 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
 - (nonnull MPKitExecStatus *)logEvent:(nonnull MPEvent *)event {
     
     // If a customer id is available, add it to the event attributes
-    NSString *customerId = _kitApi.userIdentities[@(MPUserIdentityCustomerId)];
+    FilteredMParticleUser *user = [self currentUser];
+    NSString *customerId = [user.userId stringValue];
     if (customerId.length) {
         MPEvent *surrogateEvent = [event copy];
         NSMutableDictionary *mutableInfo = [surrogateEvent.info mutableCopy];
@@ -369,6 +371,20 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
 
 - (void)onAppOpenAttributionFailure:(NSError *)error {
     [_kitApi onAttributionCompleteWithResult:nil error:error];
+}
+
+- (MPKitAPI *)kitApi {
+    if (_kitApi == nil) {
+        _kitApi = [[MPKitAPI alloc] init];
+    }
+    
+    return _kitApi;
+}
+
+#pragma helper methods
+
+- (FilteredMParticleUser *)currentUser {
+    return [[self kitApi] getCurrentUserWithKit:self];
 }
 
 @end
