@@ -12,6 +12,8 @@ Pod::Spec.new do |s|
     s.author           = { "mParticle" => "support@mparticle.com" }
     s.source           = { :git => "https://github.com/mparticle-integrations/mparticle-apple-integration-appsflyer.git", :tag => s.version.to_s }
     s.social_media_url = "https://twitter.com/mparticles"
+    
+    s.static_framework = true
 
     s.ios.deployment_target = "8.0"
     s.ios.source_files      = 'mParticle-AppsFlyer/*.{h,m,mm}'
