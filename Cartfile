@@ -1,2 +1,2 @@
 binary "https://raw.githubusercontent.com/AppsFlyerSDK/AppsFlyerFramework/master/Carthage.json" ~> 4.8.0
-github "mparticle/mparticle-apple-sdk" ~> 7.4.0
+github "mparticle/mparticle-apple-sdk" ~> 7.5.0
