@@ -261,6 +261,27 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
             execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
             appsFlyerEventName = action == MPCommerceEventActionCheckout ? AFEventInitiatedCheckout : AFEventPurchase;
             values[AFEventParamQuantity] = [MPKitAppsFlyer computeProductQuantity:commerceEvent];
+            
+            NSArray *products = commerceEvent.products;
+            if (products != nil && products.count > 0) {
+                NSMutableArray *productSkuArray = [NSMutableArray array];
+                for (int i = 0; i < products.count; i += 1) {
+                    MPProduct *product = products[i];
+                    NSString *sku = product.sku;
+                    if (sku != nil && sku.length > 0) {
+                        NSString *skuNoCommas = [sku stringByReplacingOccurrencesOfString:@"," withString:@"%2C"];
+                        if (skuNoCommas) {
+                            [productSkuArray addObject:skuNoCommas];
+                        }
+                    }
+                }
+                if (productSkuArray.count > 0) {
+                    NSString *productsString = [productSkuArray componentsJoinedByString:@","];
+                    if (productsString) {
+                        values[AFEventParamContentId] = productsString;
+                    }
+                }
+            }
 
             MPTransactionAttributes *transactionAttributes = commerceEvent.transactionAttributes;
             if (transactionAttributes.revenue.intValue) {
