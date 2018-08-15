@@ -199,6 +199,33 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
     return execStatus;
 }
 
++ (NSString * _Nullable)generateProductIdList:(nullable MPCommerceEvent *)event {
+    NSString *csvString = nil;
+    if (event != nil) {
+        NSArray *products = event.products;
+        if (products != nil && products.count > 0) {
+            NSMutableArray *productSkuArray = [NSMutableArray array];
+            for (int i = 0; i < products.count; i += 1) {
+                MPProduct *product = products[i];
+                NSString *sku = product.sku;
+                if (sku != nil && sku.length > 0) {
+                    NSString *skuNoCommas = [sku stringByReplacingOccurrencesOfString:@"," withString:@"%2C"];
+                    if (skuNoCommas) {
+                        [productSkuArray addObject:skuNoCommas];
+                    }
+                }
+            }
+            if (productSkuArray.count > 0) {
+                NSString *productsString = [productSkuArray componentsJoinedByString:@","];
+                if (productsString) {
+                    csvString = productsString;
+                }
+            }
+        }
+    }
+    return csvString;
+}
+
 - (nonnull MPKitExecStatus *)logCommerceEvent:(nonnull MPCommerceEvent *)commerceEvent {
     MPKitExecStatus *execStatus;
     
@@ -260,7 +287,15 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
         } else {
             execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
             appsFlyerEventName = action == MPCommerceEventActionCheckout ? AFEventInitiatedCheckout : AFEventPurchase;
-            values[AFEventParamQuantity] = [MPKitAppsFlyer computeProductQuantity:commerceEvent];
+            NSNumber *quantity = [MPKitAppsFlyer computeProductQuantity:commerceEvent];
+            if (quantity != nil) {
+                values[AFEventParamQuantity] = quantity;
+            }
+            
+            NSString *csvString = [MPKitAppsFlyer generateProductIdList:commerceEvent];
+            if (csvString != nil) {
+                values[AFEventParamContentId] = csvString;
+            }
 
             MPTransactionAttributes *transactionAttributes = commerceEvent.transactionAttributes;
             if (transactionAttributes.revenue.intValue) {

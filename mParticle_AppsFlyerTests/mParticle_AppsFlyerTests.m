@@ -47,4 +47,42 @@
     [event addProduct:product2];
     XCTAssertEqual(5, [[MPKitAppsFlyer computeProductQuantity:event] intValue]);
 }
+
+- (void)testGenerateSkuStringNoEvent {
+    MPCommerceEvent *event = nil;
+    XCTAssertNil([MPKitAppsFlyer generateProductIdList:event]);
+}
+
+- (void)testGenerateSkuStringNoProducts {
+    MPCommerceEvent *event = [[MPCommerceEvent alloc] initWithAction:MPCommerceEventActionPurchase];
+    XCTAssertNil([MPKitAppsFlyer generateProductIdList:event]);
+}
+
+- (void)testGenerateSkuStringSingleProduct {
+    MPCommerceEvent *event = [[MPCommerceEvent alloc] initWithAction:MPCommerceEventActionPurchase];
+    MPProduct *product = [[MPProduct alloc] initWithName:@"foo" sku:@"foo-sku" quantity:@3 price:@50];
+    [event addProduct:product];
+    XCTAssertEqualObjects(@"foo-sku",[MPKitAppsFlyer generateProductIdList:event]);
+}
+
+- (void)testGenerateSkuStringMultipleProducts {
+    MPCommerceEvent *event = [[MPCommerceEvent alloc] initWithAction:MPCommerceEventActionPurchase];
+    MPProduct *product = [[MPProduct alloc] initWithName:@"foo" sku:@"foo-sku" quantity:@3 price:@50];
+    MPProduct *product2 = [[MPProduct alloc] initWithName:@"foo2" sku:@"foo-sku-2" quantity:@2 price:@50];
+    [event addProduct:product];
+    [event addProduct:product2];
+    XCTAssertEqualObjects(@"foo-sku,foo-sku-2",[MPKitAppsFlyer generateProductIdList:event]);
+}
+
+- (void)testGenerateSkuStringEmbeddedCommas {
+    MPCommerceEvent *event = [[MPCommerceEvent alloc] initWithAction:MPCommerceEventActionPurchase];
+    MPProduct *product = [[MPProduct alloc] initWithName:@"foo" sku:@"foo-sku" quantity:@3 price:@50];
+    MPProduct *product2 = [[MPProduct alloc] initWithName:@"foo2" sku:@"foo-sku-2" quantity:@2 price:@50];
+    MPProduct *product3 = [[MPProduct alloc] initWithName:@"foo3" sku:@"foo-sku-,3" quantity:@2 price:@50];
+    [event addProduct:product];
+    [event addProduct:product2];
+    [event addProduct:product3];
+    XCTAssertEqualObjects(@"foo-sku,foo-sku-2,foo-sku-%2C3",[MPKitAppsFlyer generateProductIdList:event]);
+}
+
 @end
