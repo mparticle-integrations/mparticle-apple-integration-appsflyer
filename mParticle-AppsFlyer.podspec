@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name             = "mParticle-AppsFlyer"
-    s.version          = "7.5.6"
+    s.version          = "7.5.7"
     s.summary          = "AppsFlyer integration for mParticle"
 
     s.description      = <<-DESC
