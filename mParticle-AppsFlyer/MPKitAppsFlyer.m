@@ -8,8 +8,8 @@
 #endif
 
 #if TARGET_OS_IOS == 1 && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
-    #import <UserNotifications/UserNotifications.h>
-    #import <UserNotifications/UNUserNotificationCenter.h>
+#import <UserNotifications/UserNotifications.h>
+#import <UserNotifications/UNUserNotificationCenter.h>
 #endif
 
 NSString *const MPKitAppsFlyerConversionResultKey = @"mParticle-AppsFlyer Attribution Result";
@@ -71,7 +71,7 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
         execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeRequirementsNotMet];
         return execStatus;
     }
-
+    
     appsFlyerTracker = [AppsFlyerTracker sharedTracker];
     appsFlyerTracker.appleAppID = appleAppId;
     appsFlyerTracker.appsFlyerDevKey = devKey;
@@ -82,29 +82,29 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
     else {
         appsFlyerTracker.delegate = self;
     }
-
+    
     _configuration = configuration;
     _started = YES;
-
+    
     BOOL alreadyActive = [[UIApplication sharedApplication] applicationState] == UIApplicationStateActive;
-
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         if (alreadyActive) {
             [self didBecomeActive];
         }
         NSDictionary *userInfo = @{mParticleKitInstanceKey:[[self class] kitCode]};
-
+        
         [[NSNotificationCenter defaultCenter] postNotificationName:mParticleKitDidBecomeActiveNotification
                                                             object:nil
                                                           userInfo:userInfo];
     });
-
+    
     NSString *appsFlyerUID = (NSString *) [appsFlyerTracker getAppsFlyerUID];
     if (appsFlyerUID){
         NSDictionary<NSString *, NSString *> *integrationAttributes = @{afAppsFlyerIdIntegrationKey:appsFlyerUID};
         [[MParticle sharedInstance] setIntegrationAttributes:integrationAttributes forKit:[[self class] kitCode]];
     }
-
+    
     execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess];
     return execStatus;
 }
@@ -221,7 +221,7 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
     }
     
     MPCommerceEventAction action = commerceEvent.action;
-
+    
     if (action == MPCommerceEventActionAddToCart ||
         action == MPCommerceEventActionAddToWishList ||
         action == MPCommerceEventActionCheckout ||
@@ -231,12 +231,12 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
         if (commerceEvent.currency) {
             values[AFEventParamCurrency] = commerceEvent.currency;
         }
-
+        
         NSString *customerUserId = commerceEvent.userDefinedAttributes[kMPKAFCustomerUserId];
         if (customerUserId) {
             values[kMPKAFCustomerUserId] = customerUserId;
         }
-
+        
         NSString *appsFlyerEventName = nil;
         if (action == MPCommerceEventActionAddToCart || action == MPCommerceEventActionAddToWishList) {
             NSArray<MPProduct *> *products = commerceEvent.products;
@@ -244,25 +244,25 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
             NSUInteger initialForwardCount = [products count] > 0 ? 0 : 1;
             execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess forwardCount:initialForwardCount];
             appsFlyerEventName = action == MPCommerceEventActionAddToCart ? AFEventAddToCart : AFEventAddToWishlist;
-
+            
             for (MPProduct *product in products) {
                 productValues = [values mutableCopy];
                 if (product.price) {
                     productValues[AFEventParamPrice] = product.price;
                 }
-
+                
                 if (product.quantity) {
                     productValues[AFEventParamQuantity] = product.quantity;
                 }
-
+                
                 if (product.sku) {
                     productValues[AFEventParamContentId] = product.sku;
                 }
-
+                
                 if (product.category) {
                     productValues[AFEventParamContentType] = product.category;
                 }
-
+                
                 [appsFlyerTracker trackEvent:appsFlyerEventName withValues:productValues ? productValues : values];
                 [execStatus incrementForwardCount];
             }
@@ -278,7 +278,7 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
             if (csvString != nil) {
                 values[AFEventParamContentId] = csvString;
             }
-
+            
             MPTransactionAttributes *transactionAttributes = commerceEvent.transactionAttributes;
             if (transactionAttributes.revenue.intValue) {
                 if (action == MPCommerceEventActionPurchase) {
@@ -290,7 +290,7 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
                     values[AFEventParamPrice] = transactionAttributes.revenue;
                 }
             }
-
+            
             [appsFlyerTracker trackEvent:appsFlyerEventName withValues:values];
         }
     }
@@ -360,10 +360,10 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
     
     NSMutableDictionary *outerDictionary = [NSMutableDictionary dictionary];
     outerDictionary[MPKitAppsFlyerConversionResultKey] = installData;
-
+    
     MPAttributionResult *attributionResult = [[MPAttributionResult alloc] init];
     attributionResult.linkInfo = outerDictionary;
-
+    
     [_kitApi onAttributionCompleteWithResult:attributionResult error:nil];
 }
 
@@ -379,10 +379,10 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
     
     NSMutableDictionary *outerDictionary = [NSMutableDictionary dictionary];
     outerDictionary[MPKitAppsFlyerAppOpenResultKey] = attributionData;
-
+    
     MPAttributionResult *attributionResult = [[MPAttributionResult alloc] init];
     attributionResult.linkInfo = outerDictionary;
-
+    
     [_kitApi onAttributionCompleteWithResult:attributionResult error:nil];
 }
 
