@@ -208,7 +208,17 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
     return csvString;
 }
 
-- (nonnull MPKitExecStatus *)logCommerceEvent:(nonnull MPCommerceEvent *)commerceEvent {
+- (nonnull MPKitExecStatus *)logBaseEvent:(nonnull MPBaseEvent *)event {
+    if ([event isKindOfClass:[MPEvent class]]) {
+        return [self routeEvent:(MPEvent *)event];
+    } else if ([event isKindOfClass:[MPCommerceEvent class]]) {
+        return [self routeCommerceEvent:(MPCommerceEvent *)event];
+    } else {
+        return [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeUnavailable];
+    }
+}
+
+- (nonnull MPKitExecStatus *)routeCommerceEvent:(nonnull MPCommerceEvent *)commerceEvent {
     MPKitExecStatus *execStatus;
     
     // If a customer id is available, add it to the commerce event user defined attributes
@@ -216,7 +226,7 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
     NSString *customerId = [user.userId stringValue];
     if (customerId.length) {
         MPCommerceEvent *surrogateCommerceEvent = [commerceEvent copy];
-        surrogateCommerceEvent.userDefinedAttributes[kMPKAFCustomerUserId] = customerId;
+        [surrogateCommerceEvent.customAttributes setValue:customerId forKey:kMPKAFCustomerUserId];
         commerceEvent = surrogateCommerceEvent;
     }
     
@@ -232,7 +242,7 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
             values[AFEventParamCurrency] = commerceEvent.currency;
         }
         
-        NSString *customerUserId = commerceEvent.userDefinedAttributes[kMPKAFCustomerUserId];
+        NSString *customerUserId = commerceEvent.customAttributes[kMPKAFCustomerUserId];
         if (customerUserId) {
             values[kMPKAFCustomerUserId] = customerUserId;
         }
@@ -298,7 +308,7 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
         execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess forwardCount:0];
         NSArray *expandedInstructions = [commerceEvent expandedInstructions];
         for (MPCommerceEventInstruction *commerceEventInstruction in expandedInstructions) {
-            [self logEvent:commerceEventInstruction.event];
+            [self logBaseEvent:commerceEventInstruction.event];
             [execStatus incrementForwardCount];
         }
     }
@@ -321,21 +331,21 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
     return [NSNumber numberWithInt:quantity];
 }
 
-- (nonnull MPKitExecStatus *)logEvent:(nonnull MPEvent *)event {
+- (nonnull MPKitExecStatus *)routeEvent:(nonnull MPEvent *)event {
     
     // If a customer id is available, add it to the event attributes
     FilteredMParticleUser *user = [self currentUser];
     NSString *customerId = [user.userId stringValue];
     if (customerId.length) {
         MPEvent *surrogateEvent = [event copy];
-        NSMutableDictionary *mutableInfo = [surrogateEvent.info mutableCopy];
+        NSMutableDictionary *mutableInfo = [surrogateEvent.customAttributes mutableCopy];
         mutableInfo[kMPKAFCustomerUserId] = customerId;
-        surrogateEvent.info = mutableInfo;
+        surrogateEvent.customAttributes = mutableInfo;
         event = surrogateEvent;
     }
     
     NSString *eventName = event.name;
-    NSDictionary *eventValues = event.info;
+    NSDictionary *eventValues = event.customAttributes;
     [appsFlyerTracker trackEvent:eventName withValues:eventValues];
     MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
     return execStatus;
