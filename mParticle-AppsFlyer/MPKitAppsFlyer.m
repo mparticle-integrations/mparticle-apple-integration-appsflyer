@@ -136,12 +136,6 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
     return execStatus;
 }
 
-- (nonnull MPKitExecStatus *)didUpdateUserActivity:(nonnull NSUserActivity *)userActivity API_AVAILABLE(ios(9.0)){
-    [appsFlyerTracker didUpdateUserActivity:userActivity];
-    MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
-    return execStatus;
-}
-
 - (nonnull MPKitExecStatus *)receivedUserNotification:(nonnull NSDictionary *)userInfo {
     [appsFlyerTracker handlePushNotification:userInfo];
     MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];

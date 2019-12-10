@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name             = "mParticle-AppsFlyer"
-    s.version          = "7.12.7"
+    s.version          = "7.12.8"
     s.summary          = "AppsFlyer integration for mParticle"
 
     s.description      = <<-DESC
@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
     s.ios.deployment_target = "8.0"
     s.ios.source_files      = 'mParticle-AppsFlyer/*.{h,m,mm}'
     s.ios.dependency 'mParticle-Apple-SDK/mParticle', '~> 7.12'
-    s.ios.dependency 'AppsFlyerFramework', '~> 4.10'
+    s.ios.dependency 'AppsFlyerFramework', '~> 5.0'
     s.ios.pod_target_xcconfig = {
         'FRAMEWORK_SEARCH_PATHS' => '$(inherited) $(PODS_ROOT)/AppsFlyerFramework/**',
         'OTHER_LDFLAGS' => '$(inherited) -framework "AppsFlyerLib"'
