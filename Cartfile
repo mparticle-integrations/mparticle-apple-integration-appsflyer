@@ -1,2 +1,2 @@
 GitHub "https://raw.githubusercontent.com/AppsFlyerSDK/AppsFlyerFramework/master/AppsFlyerTracker.json" ~> 5.0.0
-github "mparticle/mparticle-apple-sdk" ~> 7.12
+github "mparticle/mparticle-apple-sdk" ~> 7.0
