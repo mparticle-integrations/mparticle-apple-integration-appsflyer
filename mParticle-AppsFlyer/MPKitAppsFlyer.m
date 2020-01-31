@@ -220,7 +220,9 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
     NSString *customerId = [user.userId stringValue];
     if (customerId.length) {
         MPCommerceEvent *surrogateCommerceEvent = [commerceEvent copy];
-        [surrogateCommerceEvent.customAttributes setValue:customerId forKey:kMPKAFCustomerUserId];
+        NSMutableDictionary *mutableInfo = [surrogateCommerceEvent.customAttributes mutableCopy];
+        mutableInfo[kMPKAFCustomerUserId] = customerId;
+        surrogateCommerceEvent.customAttributes = mutableInfo;
         commerceEvent = surrogateCommerceEvent;
     }
     
