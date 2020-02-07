@@ -358,7 +358,7 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
     return error;
 }
 
-- (void)onConversionDataReceived:(NSDictionary *)installData {
+- (void)onConversionDataSuccess:(NSDictionary *)installData {
     if (!installData) {
         [_kitApi onAttributionCompleteWithResult:nil error:[self errorWithMessage:@"Received nil installData from AppsFlyer"]];
         return;
@@ -373,7 +373,7 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
     [_kitApi onAttributionCompleteWithResult:attributionResult error:nil];
 }
 
-- (void)onConversionDataRequestFailure:(NSError *)error {
+- (void)onConversionDataFail:(NSError *)error {
     [_kitApi onAttributionCompleteWithResult:nil error:error];
 }
 
