@@ -10,6 +10,7 @@
 		04EE54D52020DD2C0063CF75 /* mParticle_AppsFlyerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 04EE54D42020DD2C0063CF75 /* mParticle_AppsFlyerTests.m */; };
 		04EE54D72020DD2C0063CF75 /* mParticle_AppsFlyer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBB8BF891DB9596D00FA55C3 /* mParticle_AppsFlyer.framework */; };
 		04EE54DE2020DE9B0063CF75 /* mParticle_Apple_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBB8BF981DB95AA300FA55C3 /* mParticle_Apple_SDK.framework */; };
+		D377138A23FDEB5A00CF4773 /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D377138923FDEB5A00CF4773 /* OCMock.framework */; };
 		DBB8BF8E1DB9596D00FA55C3 /* mParticle_AppsFlyer.h in Headers */ = {isa = PBXBuildFile; fileRef = DBB8BF8C1DB9596D00FA55C3 /* mParticle_AppsFlyer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DBB8BF961DB95A2C00FA55C3 /* MPKitAppsFlyer.h in Headers */ = {isa = PBXBuildFile; fileRef = DBB8BF941DB95A2C00FA55C3 /* MPKitAppsFlyer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DBB8BF971DB95A2C00FA55C3 /* MPKitAppsFlyer.m in Sources */ = {isa = PBXBuildFile; fileRef = DBB8BF951DB95A2C00FA55C3 /* MPKitAppsFlyer.m */; };
@@ -31,6 +32,7 @@
 		04EE54D22020DD2C0063CF75 /* mParticle_AppsFlyerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = mParticle_AppsFlyerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		04EE54D42020DD2C0063CF75 /* mParticle_AppsFlyerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mParticle_AppsFlyerTests.m; sourceTree = "<group>"; };
 		04EE54D62020DD2C0063CF75 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D377138923FDEB5A00CF4773 /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OCMock.framework; sourceTree = "<group>"; };
 		DBB8BF891DB9596D00FA55C3 /* mParticle_AppsFlyer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = mParticle_AppsFlyer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBB8BF8C1DB9596D00FA55C3 /* mParticle_AppsFlyer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mParticle_AppsFlyer.h; sourceTree = "<group>"; };
 		DBB8BF8D1DB9596D00FA55C3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -45,6 +47,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D377138A23FDEB5A00CF4773 /* OCMock.framework in Frameworks */,
 				04EE54DE2020DE9B0063CF75 /* mParticle_Apple_SDK.framework in Frameworks */,
 				04EE54D72020DD2C0063CF75 /* mParticle_AppsFlyer.framework in Frameworks */,
 			);
@@ -74,6 +77,7 @@
 		04EE54DD2020DE9B0063CF75 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D377138923FDEB5A00CF4773 /* OCMock.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -187,6 +191,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = DBB8BF7F1DB9596D00FA55C3;
@@ -226,14 +231,16 @@
 			inputPaths = (
 				"$(SRCROOT)/Carthage/Build/iOS/AppsFlyerTracker.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/mParticle_Apple_SDK.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/OCMock.framework",
 			);
 			outputPaths = (
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/AppsFlyerTracker.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/mParticle_Apple_SDK.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/OCMock.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks";
+			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

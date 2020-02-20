@@ -37,6 +37,10 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
     return appsFlyerTracker;
 }
 
+- (void)setProviderKitInstance:(id)tracker {
+    appsFlyerTracker = tracker;
+}
+
 + (void)setDelegate:(id)delegate {
     if (appsFlyerTracker) {
         if (appsFlyerTracker.delegate) {
@@ -233,7 +237,7 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
         action == MPCommerceEventActionCheckout ||
         action == MPCommerceEventActionPurchase)
     {
-        NSMutableDictionary *values = [NSMutableDictionary dictionary];
+        NSMutableDictionary *values = [commerceEvent.customAttributes mutableCopy];
         if (commerceEvent.currency) {
             values[AFEventParamCurrency] = commerceEvent.currency;
         }
