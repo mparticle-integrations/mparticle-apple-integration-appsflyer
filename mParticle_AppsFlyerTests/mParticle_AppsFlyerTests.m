@@ -8,6 +8,19 @@
 
 #import <XCTest/XCTest.h>
 #import "mParticle_AppsFlyer.h"
+#import <AppsFlyerTracker/AppsFlyerTracker.h>
+#import <OCMock/OCMock.h>
+
+NSString *const afAppleAppId = @"appleAppId";
+NSString *const afDevKey = @"devKey";
+
+@interface MPKitAppsFlyer ()
+
+- (void)setProviderKitInstance:(id)tracker;
+- (nonnull MPKitExecStatus *)routeCommerceEvent:(nonnull MPCommerceEvent *)commerceEvent;
+
+@end
+
 @interface mParticle_AppsFlyerTests : XCTestCase
 
 @end
@@ -83,6 +96,65 @@
     [event addProduct:product2];
     [event addProduct:product3];
     XCTAssertEqualObjects(@"foo-sku,foo-sku-2,foo-sku-%2C3",[MPKitAppsFlyer generateProductIdList:event]);
+}
+
+- (void)testRouteCommerce{
+    MPCommerceEvent *event = [[MPCommerceEvent alloc] initWithAction:MPCommerceEventActionPurchase];
+    event.customAttributes = @{
+        @"test": @"Malarkey"
+    };
+    MPProduct *product = [[MPProduct alloc] initWithName:@"foo" sku:@"foo-sku" quantity:@3 price:@50];
+    MPProduct *product2 = [[MPProduct alloc] initWithName:@"foo2" sku:@"foo-sku-2" quantity:@2 price:@50];
+    MPProduct *product3 = [[MPProduct alloc] initWithName:@"foo3" sku:@"foo-sku-,3" quantity:@2 price:@50];
+    [event addProduct:product];
+    [event addProduct:product2];
+    [event addProduct:product3];
+    
+    NSDictionary *resultValues = @{
+        @"af_customer_user_id" : @"0",
+        @"af_quantity" : @7,
+        @"test": @"Malarkey",
+        @"af_content_id" : @"foo-sku,foo-sku-2,foo-sku-%2C3"
+    };
+    
+    MPKitAppsFlyer *testClient = [[MPKitAppsFlyer alloc] init];
+    id mockTracker = OCMPartialMock([AppsFlyerTracker sharedTracker]);
+    [[mockTracker expect] trackEvent:AFEventPurchase withValues:resultValues];
+
+    testClient.providerKitInstance = mockTracker;
+
+    [testClient routeCommerceEvent: event];
+
+    [mockTracker verify];
+    [mockTracker stopMocking];
+}
+
+- (void)testRouteCommerceNilCustomAttributes{
+    MPCommerceEvent *event = [[MPCommerceEvent alloc] initWithAction:MPCommerceEventActionPurchase];
+    event.customAttributes = nil;
+    MPProduct *product = [[MPProduct alloc] initWithName:@"foo" sku:@"foo-sku" quantity:@3 price:@50];
+    MPProduct *product2 = [[MPProduct alloc] initWithName:@"foo2" sku:@"foo-sku-2" quantity:@2 price:@50];
+    MPProduct *product3 = [[MPProduct alloc] initWithName:@"foo3" sku:@"foo-sku-,3" quantity:@2 price:@50];
+    [event addProduct:product];
+    [event addProduct:product2];
+    [event addProduct:product3];
+    
+    NSDictionary *resultValues = @{
+        @"af_customer_user_id" : @"0",
+        @"af_quantity" : @7,
+        @"af_content_id" : @"foo-sku,foo-sku-2,foo-sku-%2C3"
+    };
+    
+    MPKitAppsFlyer *testClient = [[MPKitAppsFlyer alloc] init];
+    id mockTracker = OCMPartialMock([AppsFlyerTracker sharedTracker]);
+    [[mockTracker expect] trackEvent:AFEventPurchase withValues:resultValues];
+
+    testClient.providerKitInstance = mockTracker;
+
+    [testClient routeCommerceEvent: event];
+
+    [mockTracker verify];
+    [mockTracker stopMocking];
 }
 
 @end

@@ -37,6 +37,10 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
     return appsFlyerTracker;
 }
 
+- (void)setProviderKitInstance:(id)tracker {
+    appsFlyerTracker = tracker;
+}
+
 + (void)setDelegate:(id)delegate {
     if (appsFlyerTracker) {
         if (appsFlyerTracker.delegate) {
@@ -220,7 +224,7 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
     NSString *customerId = [user.userId stringValue];
     if (customerId.length) {
         MPCommerceEvent *surrogateCommerceEvent = [commerceEvent copy];
-        NSMutableDictionary *mutableInfo = [surrogateCommerceEvent.customAttributes mutableCopy];
+        NSMutableDictionary *mutableInfo = surrogateCommerceEvent.customAttributes ? [surrogateCommerceEvent.customAttributes mutableCopy] : [NSMutableDictionary dictionary];
         mutableInfo[kMPKAFCustomerUserId] = customerId;
         surrogateCommerceEvent.customAttributes = mutableInfo;
         commerceEvent = surrogateCommerceEvent;
@@ -233,7 +237,7 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
         action == MPCommerceEventActionCheckout ||
         action == MPCommerceEventActionPurchase)
     {
-        NSMutableDictionary *values = [NSMutableDictionary dictionary];
+        NSMutableDictionary *values = commerceEvent.customAttributes ? [commerceEvent.customAttributes mutableCopy] : [NSMutableDictionary dictionary];
         if (commerceEvent.currency) {
             values[AFEventParamCurrency] = commerceEvent.currency;
         }
@@ -334,14 +338,14 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
     NSString *customerId = [user.userId stringValue];
     if (customerId.length) {
         MPEvent *surrogateEvent = [event copy];
-        NSMutableDictionary *mutableInfo = [surrogateEvent.customAttributes mutableCopy];
+        NSMutableDictionary *mutableInfo = surrogateEvent.customAttributes ? [surrogateEvent.customAttributes mutableCopy] : [NSMutableDictionary dictionary];
         mutableInfo[kMPKAFCustomerUserId] = customerId;
         surrogateEvent.customAttributes = mutableInfo;
         event = surrogateEvent;
     }
     
     NSString *eventName = event.name;
-    NSDictionary *eventValues = event.customAttributes;
+    NSDictionary *eventValues = event.customAttributes ? [event.customAttributes mutableCopy] : [NSMutableDictionary dictionary];
     [appsFlyerTracker trackEvent:eventName withValues:eventValues];
     MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
     return execStatus;
