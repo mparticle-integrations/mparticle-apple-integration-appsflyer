@@ -15,7 +15,7 @@
 		DBB8BF961DB95A2C00FA55C3 /* MPKitAppsFlyer.h in Headers */ = {isa = PBXBuildFile; fileRef = DBB8BF941DB95A2C00FA55C3 /* MPKitAppsFlyer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DBB8BF971DB95A2C00FA55C3 /* MPKitAppsFlyer.m in Sources */ = {isa = PBXBuildFile; fileRef = DBB8BF951DB95A2C00FA55C3 /* MPKitAppsFlyer.m */; };
 		DBB8BF991DB95AA300FA55C3 /* mParticle_Apple_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBB8BF981DB95AA300FA55C3 /* mParticle_Apple_SDK.framework */; };
-		DBB8BF9B1DB95B5C00FA55C3 /* AppsFlyerTracker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBB8BF9A1DB95B5C00FA55C3 /* AppsFlyerTracker.framework */; };
+		DBB8BF9B1DB95B5C00FA55C3 /* AppsFlyerLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBB8BF9A1DB95B5C00FA55C3 /* AppsFlyerLib.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,7 +39,7 @@
 		DBB8BF941DB95A2C00FA55C3 /* MPKitAppsFlyer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPKitAppsFlyer.h; sourceTree = "<group>"; };
 		DBB8BF951DB95A2C00FA55C3 /* MPKitAppsFlyer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPKitAppsFlyer.m; sourceTree = "<group>"; };
 		DBB8BF981DB95AA300FA55C3 /* mParticle_Apple_SDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = mParticle_Apple_SDK.framework; path = Carthage/Build/iOS/mParticle_Apple_SDK.framework; sourceTree = "<group>"; };
-		DBB8BF9A1DB95B5C00FA55C3 /* AppsFlyerTracker.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppsFlyerTracker.framework; path = Carthage/Build/iOS/AppsFlyerTracker.framework; sourceTree = "<group>"; };
+		DBB8BF9A1DB95B5C00FA55C3 /* AppsFlyerLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppsFlyerLib.framework; path = Carthage/Build/iOS/AppsFlyerLib.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DBB8BF9B1DB95B5C00FA55C3 /* AppsFlyerTracker.framework in Frameworks */,
+				DBB8BF9B1DB95B5C00FA55C3 /* AppsFlyerLib.framework in Frameworks */,
 				DBB8BF991DB95AA300FA55C3 /* mParticle_Apple_SDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -85,7 +85,7 @@
 		DBB8BF7F1DB9596D00FA55C3 = {
 			isa = PBXGroup;
 			children = (
-				DBB8BF9A1DB95B5C00FA55C3 /* AppsFlyerTracker.framework */,
+				DBB8BF9A1DB95B5C00FA55C3 /* AppsFlyerLib.framework */,
 				DBB8BF981DB95AA300FA55C3 /* mParticle_Apple_SDK.framework */,
 				DBB8BF8B1DB9596D00FA55C3 /* mParticle-AppsFlyer */,
 				04EE54D32020DD2C0063CF75 /* mParticle_AppsFlyerTests */,
