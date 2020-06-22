@@ -1,25 +1,9 @@
+source 'https://github.com/CocoaPods/Specs.git'
 # Uncomment the next line to define a global platform for your project
 # platform :ios, '9.0'
 
-pre_install do |installer|
-  Pod::Installer::Xcode::TargetValidator.send(:define_method, :verify_no_static_framework_transitive_dependencies) {}
-end
-
 target 'mParticle-AppsFlyer-Example' do
-  # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
   use_frameworks!
 
-  # Pods for mParticle-AppsFlyer-Example
   pod 'mParticle-AppsFlyer', :path => '..'
-
-  target 'mParticle-AppsFlyer-ExampleTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-
-  target 'mParticle-AppsFlyer-ExampleUITests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-
 end
