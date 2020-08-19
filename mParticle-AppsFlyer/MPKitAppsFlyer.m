@@ -1,10 +1,8 @@
 #import "MPKitAppsFlyer.h"
-#if defined(__has_include) && __has_include(<AppsFlyerTracker/AppsFlyerTracker.h>)
-#import <AppsFlyerTracker/AppsFlyerTracker.h>
-#elif defined(__has_include) && __has_include(<AppsFlyerLib/AppsFlyerTracker.h>)
-#import <AppsFlyerLib/AppsFlyerTracker.h>
+#if defined(__has_include) && __has_include(<AppsFlyerLib/AppsFlyerLib.h>)
+#import <AppsFlyerLib/AppsFlyerLib.h>
 #else
-#import "AppsFlyerTracker.h"
+#import "AppsFlyerLib.h"
 #endif
 
 #if TARGET_OS_IOS == 1 && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
@@ -23,10 +21,10 @@ NSString *const afDevKey = @"devKey";
 NSString *const afAppsFlyerIdIntegrationKey = @"appsflyer_id_integration_setting";
 NSString *const kMPKAFCustomerUserId = @"af_customer_user_id";
 
-static AppsFlyerTracker *appsFlyerTracker = nil;
-static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
+static AppsFlyerLib *appsFlyerTracker = nil;
+static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
 
-@interface MPKitAppsFlyer() <AppsFlyerTrackerDelegate>
+@interface MPKitAppsFlyer() <AppsFlyerLibDelegate>
 @end
 
 @implementation MPKitAppsFlyer
@@ -51,10 +49,10 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
             return;
         }
         
-        appsFlyerTracker.delegate = (id<AppsFlyerTrackerDelegate>)delegate;
+        appsFlyerTracker.delegate = (id<AppsFlyerLibDelegate>)delegate;
     }
     else {
-        temporaryDelegate = (id<AppsFlyerTrackerDelegate>)delegate;
+        temporaryDelegate = (id<AppsFlyerLibDelegate>)delegate;
     }
 }
 
@@ -76,7 +74,7 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
         return execStatus;
     }
     
-    appsFlyerTracker = [AppsFlyerTracker sharedTracker];
+    appsFlyerTracker = [AppsFlyerLib shared];
     appsFlyerTracker.appleAppID = appleAppId;
     appsFlyerTracker.appsFlyerDevKey = devKey;
     if (temporaryDelegate) {
@@ -114,7 +112,7 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
 }
 
 - (nonnull MPKitExecStatus *)didBecomeActive {
-    [appsFlyerTracker trackAppLaunch];
+    [appsFlyerTracker start];
     MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
     return execStatus;
 }
@@ -273,7 +271,7 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
                     productValues[AFEventParamContentType] = product.category;
                 }
                 
-                [appsFlyerTracker trackEvent:appsFlyerEventName withValues:productValues ? productValues : values];
+                [appsFlyerTracker logEvent:appsFlyerEventName withValues:productValues ? productValues : values];
                 [execStatus incrementForwardCount];
             }
         } else {
@@ -301,7 +299,7 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
                 }
             }
             
-            [appsFlyerTracker trackEvent:appsFlyerEventName withValues:values];
+            [appsFlyerTracker logEvent:appsFlyerEventName withValues:values];
         }
     }
     else {
@@ -346,13 +344,13 @@ static id<AppsFlyerTrackerDelegate> temporaryDelegate = nil;
     
     NSString *eventName = event.name;
     NSDictionary *eventValues = event.customAttributes ? [event.customAttributes mutableCopy] : [NSMutableDictionary dictionary];
-    [appsFlyerTracker trackEvent:eventName withValues:eventValues];
+    [appsFlyerTracker logEvent:eventName withValues:eventValues];
     MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
     return execStatus;
 }
 
 - (nonnull MPKitExecStatus *)setOptOut:(BOOL)optOut {
-    appsFlyerTracker.deviceTrackingDisabled = optOut;
+    appsFlyerTracker.deviceLoggingDisabled = optOut;
     MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
     return execStatus;
 }
