@@ -350,7 +350,7 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
 }
 
 - (nonnull MPKitExecStatus *)setOptOut:(BOOL)optOut {
-    appsFlyerTracker.deviceLoggingDisabled = optOut;
+    appsFlyerTracker.isStopped = optOut;
     MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
     return execStatus;
 }
