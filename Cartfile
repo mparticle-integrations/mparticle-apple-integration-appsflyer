@@ -1,2 +1,2 @@
 binary "https://raw.githubusercontent.com/AppsFlyerSDK/AppsFlyerFramework/master/Carthage/appsflyer-ios.json" ~> 6.0
-github "mparticle/mparticle-apple-sdk" ~> 8.0
+github "sorinc03/mparticle-apple-sdk" ~> 8.0
