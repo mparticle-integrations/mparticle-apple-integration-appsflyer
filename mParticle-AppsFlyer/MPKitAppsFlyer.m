@@ -86,7 +86,7 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
     }
     
     _configuration = configuration;
-    _started = YES;
+    [self start];
     
     BOOL alreadyActive = [[UIApplication sharedApplication] applicationState] == UIApplicationStateActive;
     
@@ -109,6 +109,10 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
     
     execStatus = [[MPKitExecStatus alloc] initWithSDKCode:[[self class] kitCode] returnCode:MPKitReturnCodeSuccess];
     return execStatus;
+}
+
+- (void)start {
+    self->_started = YES;
 }
 
 - (nonnull MPKitExecStatus *)didBecomeActive {
