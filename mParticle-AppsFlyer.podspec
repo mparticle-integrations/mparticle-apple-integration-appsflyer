@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
     s.static_framework = true
 
     s.ios.deployment_target = "9.0"
-    s.ios.source_files      = 'mParticle-AppsFlyer/*.{h,m,mm}'
+    s.ios.source_files      = 'Sources/**/*.{h,m,mm}'
     s.ios.dependency 'mParticle-Apple-SDK/mParticle', '~> 8.0'
     s.ios.dependency 'AppsFlyerFramework', '~> 6.2'
 
