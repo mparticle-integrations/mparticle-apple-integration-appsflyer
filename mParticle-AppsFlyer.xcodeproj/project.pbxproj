@@ -11,8 +11,8 @@
 		04EE54D72020DD2C0063CF75 /* mParticle_AppsFlyer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBB8BF891DB9596D00FA55C3 /* mParticle_AppsFlyer.framework */; };
 		04EE54DE2020DE9B0063CF75 /* mParticle_Apple_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBB8BF981DB95AA300FA55C3 /* mParticle_Apple_SDK.framework */; };
 		D377138A23FDEB5A00CF4773 /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D377138923FDEB5A00CF4773 /* OCMock.framework */; };
-		DBB8BF8E1DB9596D00FA55C3 /* mParticle_AppsFlyer.h in Headers */ = {isa = PBXBuildFile; fileRef = DBB8BF8C1DB9596D00FA55C3 /* mParticle_AppsFlyer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		DBB8BF961DB95A2C00FA55C3 /* MPKitAppsFlyer.h in Headers */ = {isa = PBXBuildFile; fileRef = DBB8BF941DB95A2C00FA55C3 /* MPKitAppsFlyer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DB5DF5D72624A893004BBEC9 /* mParticle_AppsFlyer.h in Headers */ = {isa = PBXBuildFile; fileRef = DB5DF5D52624A893004BBEC9 /* mParticle_AppsFlyer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DB5DF5D82624A893004BBEC9 /* MPKitAppsFlyer.h in Headers */ = {isa = PBXBuildFile; fileRef = DB5DF5D62624A893004BBEC9 /* MPKitAppsFlyer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DBB8BF971DB95A2C00FA55C3 /* MPKitAppsFlyer.m in Sources */ = {isa = PBXBuildFile; fileRef = DBB8BF951DB95A2C00FA55C3 /* MPKitAppsFlyer.m */; };
 		DBB8BF991DB95AA300FA55C3 /* mParticle_Apple_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBB8BF981DB95AA300FA55C3 /* mParticle_Apple_SDK.framework */; };
 		DBB8BF9B1DB95B5C00FA55C3 /* AppsFlyerLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBB8BF9A1DB95B5C00FA55C3 /* AppsFlyerLib.framework */; };
@@ -33,10 +33,10 @@
 		04EE54D42020DD2C0063CF75 /* mParticle_AppsFlyerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mParticle_AppsFlyerTests.m; sourceTree = "<group>"; };
 		04EE54D62020DD2C0063CF75 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D377138923FDEB5A00CF4773 /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OCMock.framework; sourceTree = "<group>"; };
+		DB5DF5D52624A893004BBEC9 /* mParticle_AppsFlyer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mParticle_AppsFlyer.h; sourceTree = "<group>"; };
+		DB5DF5D62624A893004BBEC9 /* MPKitAppsFlyer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPKitAppsFlyer.h; sourceTree = "<group>"; };
 		DBB8BF891DB9596D00FA55C3 /* mParticle_AppsFlyer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = mParticle_AppsFlyer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		DBB8BF8C1DB9596D00FA55C3 /* mParticle_AppsFlyer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mParticle_AppsFlyer.h; sourceTree = "<group>"; };
 		DBB8BF8D1DB9596D00FA55C3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = Sources/Info.plist; sourceTree = SOURCE_ROOT; };
-		DBB8BF941DB95A2C00FA55C3 /* MPKitAppsFlyer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPKitAppsFlyer.h; sourceTree = "<group>"; };
 		DBB8BF951DB95A2C00FA55C3 /* MPKitAppsFlyer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPKitAppsFlyer.m; sourceTree = "<group>"; };
 		DBB8BF981DB95AA300FA55C3 /* mParticle_Apple_SDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = mParticle_Apple_SDK.framework; path = Carthage/Build/iOS/mParticle_Apple_SDK.framework; sourceTree = "<group>"; };
 		DBB8BF9A1DB95B5C00FA55C3 /* AppsFlyerLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppsFlyerLib.framework; path = Carthage/Build/iOS/AppsFlyerLib.framework; sourceTree = "<group>"; };
@@ -82,6 +82,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		DB5DF5D42624A893004BBEC9 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				DB5DF5D52624A893004BBEC9 /* mParticle_AppsFlyer.h */,
+				DB5DF5D62624A893004BBEC9 /* MPKitAppsFlyer.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
 		DBB8BF7F1DB9596D00FA55C3 = {
 			isa = PBXGroup;
 			children = (
@@ -107,9 +116,8 @@
 		DBB8BF8B1DB9596D00FA55C3 /* mParticle-AppsFlyer */ = {
 			isa = PBXGroup;
 			children = (
-				DBB8BF941DB95A2C00FA55C3 /* MPKitAppsFlyer.h */,
+				DB5DF5D42624A893004BBEC9 /* include */,
 				DBB8BF951DB95A2C00FA55C3 /* MPKitAppsFlyer.m */,
-				DBB8BF8C1DB9596D00FA55C3 /* mParticle_AppsFlyer.h */,
 			);
 			name = "mParticle-AppsFlyer";
 			path = "Sources/mParticle-AppsFlyer";
@@ -122,8 +130,8 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DBB8BF8E1DB9596D00FA55C3 /* mParticle_AppsFlyer.h in Headers */,
-				DBB8BF961DB95A2C00FA55C3 /* MPKitAppsFlyer.h in Headers */,
+				DB5DF5D82624A893004BBEC9 /* MPKitAppsFlyer.h in Headers */,
+				DB5DF5D72624A893004BBEC9 /* mParticle_AppsFlyer.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
