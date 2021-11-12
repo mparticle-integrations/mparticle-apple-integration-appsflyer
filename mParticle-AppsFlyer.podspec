@@ -22,10 +22,6 @@ Pod::Spec.new do |s|
 
     s.ios.pod_target_xcconfig = {
         'FRAMEWORK_SEARCH_PATHS' => '$(inherited) $(PODS_ROOT)/AppsFlyerFramework/**',
-        'OTHER_LDFLAGS' => '$(inherited) -framework "AppsFlyerLib"',
-        'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64'
-    }
-    s.ios.user_target_xcconfig = {
-        'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64'
+        'OTHER_LDFLAGS' => '$(inherited) -framework "AppsFlyerLib"'
     }
 end
