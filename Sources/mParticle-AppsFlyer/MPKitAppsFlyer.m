@@ -86,6 +86,7 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
     }
     
     _configuration = configuration;
+    [appsFlyerTracker waitForATTUserAuthorizationWithTimeoutInterval:60];
     [self start];
     
     BOOL alreadyActive = [[UIApplication sharedApplication] applicationState] == UIApplicationStateActive;
