@@ -24,7 +24,7 @@ NSString *const kMPKAFCustomerUserId = @"af_customer_user_id";
 static AppsFlyerLib *appsFlyerTracker = nil;
 static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
 
-@interface MPKitAppsFlyer() <AppsFlyerLibDelegate>
+@interface MPKitAppsFlyer() <AppsFlyerLibDelegate, AppsFlyerDeepLinkDelegate>
 @end
 
 @implementation MPKitAppsFlyer
@@ -85,6 +85,8 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
         appsFlyerTracker.delegate = self;
     }
     
+    appsFlyerTracker.deepLinkDelegate = self;
+    
     _configuration = configuration;
     [appsFlyerTracker waitForATTUserAuthorizationWithTimeoutInterval:60];
     [self start];
@@ -95,6 +97,7 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
         if (alreadyActive) {
             [self didBecomeActive];
         }
+
         NSDictionary *userInfo = @{mParticleKitInstanceKey:[[self class] kitCode]};
         
         [[NSNotificationCenter defaultCenter] postNotificationName:mParticleKitDidBecomeActiveNotification
@@ -385,22 +388,46 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
 }
 
 - (void)onAppOpenAttribution:(NSDictionary *)attributionData {
-    if (!attributionData) {
-        [_kitApi onAttributionCompleteWithResult:nil error:[self errorWithMessage:@"Received nil attributionData from AppsFlyer"]];
-        return;
-    }
-    
-    NSMutableDictionary *outerDictionary = [NSMutableDictionary dictionary];
-    outerDictionary[MPKitAppsFlyerAppOpenResultKey] = attributionData;
-    
-    MPAttributionResult *attributionResult = [[MPAttributionResult alloc] init];
-    attributionResult.linkInfo = outerDictionary;
-    
-    [_kitApi onAttributionCompleteWithResult:attributionResult error:nil];
+    // do nothing, Appsflyer new UDL implementation will use new deep linking method with both
+    // custom URI and appsflyer's Onelink
 }
 
 - (void)onAppOpenAttributionFailure:(NSError *)error {
-    [_kitApi onAttributionCompleteWithResult:nil error:error];
+    // do nothing, Appsflyer new UDL implementation will use new deep linking method with both
+    // custom URI and appsflyer's Onelink
+}
+
+- (void)didResolveDeepLink:(AppsFlyerDeepLinkResult *)result {
+    switch (result.status) {
+        case AFSDKDeepLinkResultStatusFound:
+        {
+            NSLog(@"[AFSDK] Deep link found");
+            
+            if (result.deepLink == nil) {
+                NSLog(@"[AFSDK] Could not extract deep link object");
+                return;
+            }
+            
+            NSMutableDictionary *outerDictionary = [NSMutableDictionary dictionary];
+            outerDictionary[MPKitAppsFlyerAppOpenResultKey] = result.deepLink.clickEvent;
+            
+            MPAttributionResult *attributionResult = [[MPAttributionResult alloc] init];
+            attributionResult.linkInfo = outerDictionary;
+            
+            [_kitApi onAttributionCompleteWithResult:attributionResult error:nil];
+            break;
+        }
+        case AFSDKDeepLinkResultStatusNotFound:
+        {
+            NSLog(@"[AFSDK] Deep link not found");
+            break;
+        }
+        default:
+        {
+            NSLog(@"Error %@", result.error);
+            break;
+        }
+    }
 }
 
 - (MPKitAPI *)kitApi {
