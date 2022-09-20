@@ -3,19 +3,18 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		04EE54D52020DD2C0063CF75 /* mParticle_AppsFlyerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 04EE54D42020DD2C0063CF75 /* mParticle_AppsFlyerTests.m */; };
-		04EE54D72020DD2C0063CF75 /* mParticle_AppsFlyer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBB8BF891DB9596D00FA55C3 /* mParticle_AppsFlyer.framework */; };
-		04EE54DE2020DE9B0063CF75 /* mParticle_Apple_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBB8BF981DB95AA300FA55C3 /* mParticle_Apple_SDK.framework */; };
-		D377138A23FDEB5A00CF4773 /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D377138923FDEB5A00CF4773 /* OCMock.framework */; };
+		21E5883128D967EF00A45325 /* mParticle_Apple_SDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 21E5883028D967EF00A45325 /* mParticle_Apple_SDK.xcframework */; };
+		21E5883328D967FB00A45325 /* AppsFlyerLib.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 21E5883228D967FB00A45325 /* AppsFlyerLib.xcframework */; };
+		21E5883528D9683600A45325 /* AppsFlyerLib.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 21E5883228D967FB00A45325 /* AppsFlyerLib.xcframework */; };
+		21E5883828D968CE00A45325 /* OCMock.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 21E5883728D968CE00A45325 /* OCMock.xcframework */; };
 		DB5DF5D72624A893004BBEC9 /* mParticle_AppsFlyer.h in Headers */ = {isa = PBXBuildFile; fileRef = DB5DF5D52624A893004BBEC9 /* mParticle_AppsFlyer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DB5DF5D82624A893004BBEC9 /* MPKitAppsFlyer.h in Headers */ = {isa = PBXBuildFile; fileRef = DB5DF5D62624A893004BBEC9 /* MPKitAppsFlyer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DBB8BF971DB95A2C00FA55C3 /* MPKitAppsFlyer.m in Sources */ = {isa = PBXBuildFile; fileRef = DBB8BF951DB95A2C00FA55C3 /* MPKitAppsFlyer.m */; };
-		DBB8BF991DB95AA300FA55C3 /* mParticle_Apple_SDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBB8BF981DB95AA300FA55C3 /* mParticle_Apple_SDK.framework */; };
-		DBB8BF9B1DB95B5C00FA55C3 /* AppsFlyerLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBB8BF9A1DB95B5C00FA55C3 /* AppsFlyerLib.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,14 +31,15 @@
 		04EE54D22020DD2C0063CF75 /* mParticle_AppsFlyerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = mParticle_AppsFlyerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		04EE54D42020DD2C0063CF75 /* mParticle_AppsFlyerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = mParticle_AppsFlyerTests.m; sourceTree = "<group>"; };
 		04EE54D62020DD2C0063CF75 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		21E5883028D967EF00A45325 /* mParticle_Apple_SDK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = mParticle_Apple_SDK.xcframework; path = Carthage/Build/mParticle_Apple_SDK.xcframework; sourceTree = "<group>"; };
+		21E5883228D967FB00A45325 /* AppsFlyerLib.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = AppsFlyerLib.xcframework; path = Carthage/Build/AppsFlyerLib.xcframework; sourceTree = "<group>"; };
+		21E5883728D968CE00A45325 /* OCMock.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = OCMock.xcframework; path = Carthage/Build/OCMock.xcframework; sourceTree = "<group>"; };
 		D377138923FDEB5A00CF4773 /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OCMock.framework; sourceTree = "<group>"; };
 		DB5DF5D52624A893004BBEC9 /* mParticle_AppsFlyer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mParticle_AppsFlyer.h; sourceTree = "<group>"; };
 		DB5DF5D62624A893004BBEC9 /* MPKitAppsFlyer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPKitAppsFlyer.h; sourceTree = "<group>"; };
 		DBB8BF891DB9596D00FA55C3 /* mParticle_AppsFlyer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = mParticle_AppsFlyer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBB8BF8D1DB9596D00FA55C3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = Sources/Info.plist; sourceTree = SOURCE_ROOT; };
 		DBB8BF951DB95A2C00FA55C3 /* MPKitAppsFlyer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPKitAppsFlyer.m; sourceTree = "<group>"; };
-		DBB8BF981DB95AA300FA55C3 /* mParticle_Apple_SDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = mParticle_Apple_SDK.framework; path = Carthage/Build/iOS/mParticle_Apple_SDK.framework; sourceTree = "<group>"; };
-		DBB8BF9A1DB95B5C00FA55C3 /* AppsFlyerLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppsFlyerLib.framework; path = Carthage/Build/iOS/AppsFlyerLib.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,9 +47,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D377138A23FDEB5A00CF4773 /* OCMock.framework in Frameworks */,
-				04EE54DE2020DE9B0063CF75 /* mParticle_Apple_SDK.framework in Frameworks */,
-				04EE54D72020DD2C0063CF75 /* mParticle_AppsFlyer.framework in Frameworks */,
+				21E5883828D968CE00A45325 /* OCMock.xcframework in Frameworks */,
+				21E5883528D9683600A45325 /* AppsFlyerLib.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -57,8 +56,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DBB8BF9B1DB95B5C00FA55C3 /* AppsFlyerLib.framework in Frameworks */,
-				DBB8BF991DB95AA300FA55C3 /* mParticle_Apple_SDK.framework in Frameworks */,
+				21E5883328D967FB00A45325 /* AppsFlyerLib.xcframework in Frameworks */,
+				21E5883128D967EF00A45325 /* mParticle_Apple_SDK.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,6 +76,7 @@
 		04EE54DD2020DE9B0063CF75 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				21E5883728D968CE00A45325 /* OCMock.xcframework */,
 				D377138923FDEB5A00CF4773 /* OCMock.framework */,
 			);
 			name = Frameworks;
@@ -94,8 +94,8 @@
 		DBB8BF7F1DB9596D00FA55C3 = {
 			isa = PBXGroup;
 			children = (
-				DBB8BF9A1DB95B5C00FA55C3 /* AppsFlyerLib.framework */,
-				DBB8BF981DB95AA300FA55C3 /* mParticle_Apple_SDK.framework */,
+				21E5883228D967FB00A45325 /* AppsFlyerLib.xcframework */,
+				21E5883028D967EF00A45325 /* mParticle_Apple_SDK.xcframework */,
 				DBB8BF8D1DB9596D00FA55C3 /* Info.plist */,
 				DBB8BF8B1DB9596D00FA55C3 /* mParticle-AppsFlyer */,
 				04EE54D32020DD2C0063CF75 /* mParticle_AppsFlyerTests */,
@@ -145,7 +145,6 @@
 				04EE54CE2020DD2C0063CF75 /* Sources */,
 				04EE54CF2020DD2C0063CF75 /* Frameworks */,
 				04EE54D02020DD2C0063CF75 /* Resources */,
-				04EE54DF2020DFDD0063CF75 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -231,28 +230,6 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		04EE54DF2020DFDD0063CF75 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/AppsFlyerTracker.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/mParticle_Apple_SDK.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/OCMock.framework",
-			);
-			outputPaths = (
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/AppsFlyerTracker.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/mParticle_Apple_SDK.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/OCMock.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		04EE54CE2020DD2C0063CF75 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -304,7 +281,11 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = mParticle_AppsFlyerTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mparticle.mParticle-AppsFlyerTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -334,7 +315,11 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = mParticle_AppsFlyerTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mparticle.mParticle-AppsFlyerTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -453,7 +438,11 @@
 				INFOPLIST_FILE = Sources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mparticle.mParticle-AppsFlyer";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -476,7 +465,11 @@
 				INFOPLIST_FILE = Sources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mparticle.mParticle-AppsFlyer";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;

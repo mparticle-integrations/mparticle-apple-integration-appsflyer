@@ -8,7 +8,7 @@
 
 #import <XCTest/XCTest.h>
 #import "mParticle_AppsFlyer.h"
-#import <AppsFlyerTracker/AppsFlyerTracker.h>
+#import <AppsFlyerLib/AppsFlyerLib.h>
 #import <OCMock/OCMock.h>
 
 NSString *const afAppleAppId = @"appleAppId";
@@ -118,8 +118,8 @@ NSString *const afDevKey = @"devKey";
     };
     
     MPKitAppsFlyer *testClient = [[MPKitAppsFlyer alloc] init];
-    id mockTracker = OCMPartialMock([AppsFlyerTracker sharedTracker]);
-    [[mockTracker expect] trackEvent:AFEventPurchase withValues:resultValues];
+    id mockTracker = OCMPartialMock([AppsFlyerLib shared]);
+    [[mockTracker expect] logEvent:AFEventPurchase withValues:resultValues];
 
     testClient.providerKitInstance = mockTracker;
 
@@ -146,8 +146,8 @@ NSString *const afDevKey = @"devKey";
     };
     
     MPKitAppsFlyer *testClient = [[MPKitAppsFlyer alloc] init];
-    id mockTracker = OCMPartialMock([AppsFlyerTracker sharedTracker]);
-    [[mockTracker expect] trackEvent:AFEventPurchase withValues:resultValues];
+    id mockTracker = OCMPartialMock([AppsFlyerLib shared]);
+    [[mockTracker expect] logEvent:AFEventPurchase withValues:resultValues];
 
     testClient.providerKitInstance = mockTracker;
 
