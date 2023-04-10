@@ -7,13 +7,13 @@ This repository contains the [AppsFlyer](https://www.appsflyer.com) integration 
 1. Add the kit dependency to your app's Podfile or Cartfile:
 
     ```
-    pod 'mParticle-AppsFlyer', '~> 7.0'
+    pod 'mParticle-AppsFlyer', '~> 8'
     ```
 
     OR
 
     ```
-    github "mparticle-integrations/mparticle-apple-integration-appsflyer" ~> 7.0
+    github "mparticle-integrations/mparticle-apple-integration-appsflyer" ~> 8.0
     ```
 
 2. Follow the mParticle iOS SDK [quick-start](https://github.com/mParticle/mparticle-apple-sdk), then rebuild and launch your app, and verify that you see `"Included kits: { AppsFlyer }"` in your Xcode console 
