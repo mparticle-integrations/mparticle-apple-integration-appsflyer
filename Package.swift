@@ -17,7 +17,7 @@ let package = Package(
                .upToNextMajor(from: "8.0.0")),
       .package(name: "AppsFlyerLib",
                url: "https://github.com/AppsFlyerSDK/AppsFlyerFramework",
-               .upToNextMajor(from: "6.8.0")),
+               .upToNextMajor(from: "6.11.0")),
     ],
     targets: [
         .target(
