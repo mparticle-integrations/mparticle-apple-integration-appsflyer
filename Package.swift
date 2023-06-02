@@ -10,6 +10,10 @@ let package = Package(
         .library(
             name: "mParticle-AppsFlyer",
             targets: ["mParticle-AppsFlyer"]),
+        .library(
+            name: "mParticle-AppsFlyer-NoLocation",
+            targets: ["mParticle-AppsFlyer-NoLocation"]
+        )
     ],
     dependencies: [
       .package(name: "mParticle-Apple-SDK",
@@ -23,9 +27,17 @@ let package = Package(
         .target(
             name: "mParticle-AppsFlyer",
             dependencies: [
-              .byName(name: "mParticle-Apple-SDK"),
+              .product(name: "mParticle-Apple-SDK", package: "mParticle-Apple-SDK"),
               .product(name: "AppsFlyerLib", package: "AppsFlyerLib"),
             ]
+        ),
+        .target(
+            name: "mParticle-AppsFlyer-NoLocation",
+            dependencies: [
+              .product(name: "mParticle-Apple-SDK-NoLocation", package: "mParticle-Apple-SDK"),
+              .product(name: "AppsFlyerLib", package: "AppsFlyerLib"),
+            ],
+            path: "SPM/mParticle-AppsFlyer-NoLocation"
         )
     ]
 )
