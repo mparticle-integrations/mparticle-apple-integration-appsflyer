@@ -30,9 +30,6 @@ module.exports = {
         "@semantic-release/github",
         {
           assets: [
-            "mParticle_AppsFlyer.framework.zip",
-            "mParticle_AppsFlyer.xcframework.zip",
-            "generated-docs.zip",
           ],
         },
       ],
