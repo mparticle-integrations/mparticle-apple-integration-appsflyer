@@ -111,7 +111,7 @@ NSString *const afDevKey = @"devKey";
     [event addProduct:product3];
     
     NSDictionary *resultValues = @{
-        @"af_customer_user_id" : @"0",
+        @"af_customer_user_id" : @"2",
         @"af_quantity" : @7,
         @"test": @"Malarkey",
         @"af_content_id" : @"foo-sku,foo-sku-2,foo-sku-%2C3"
@@ -140,7 +140,7 @@ NSString *const afDevKey = @"devKey";
     [event addProduct:product3];
     
     NSDictionary *resultValues = @{
-        @"af_customer_user_id" : @"0",
+        @"af_customer_user_id" : @"2",
         @"af_quantity" : @7,
         @"af_content_id" : @"foo-sku,foo-sku-2,foo-sku-%2C3"
     };
