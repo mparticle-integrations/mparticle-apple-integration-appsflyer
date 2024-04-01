@@ -20,7 +20,7 @@ let package = Package(
                url: "https://github.com/mParticle/mparticle-apple-sdk",
                .upToNextMajor(from: "8.0.0")),
       .package(name: "AppsFlyerLib",
-               url: "https://github.com/AppsFlyerSDK/AppsFlyerFramework",
+               url: "https://github.com/AppsFlyerSDK/AppsFlyerFramework-Static",
                .upToNextMajor(from: "6.8.0")),
     ],
     targets: [
@@ -28,14 +28,14 @@ let package = Package(
             name: "mParticle-AppsFlyer",
             dependencies: [
               .product(name: "mParticle-Apple-SDK", package: "mParticle-Apple-SDK"),
-              .product(name: "AppsFlyerLib", package: "AppsFlyerLib"),
+              .product(name: "AppsFlyerLib-Static", package: "AppsFlyerLib"),
             ]
         ),
         .target(
             name: "mParticle-AppsFlyer-NoLocation",
             dependencies: [
               .product(name: "mParticle-Apple-SDK-NoLocation", package: "mParticle-Apple-SDK"),
-              .product(name: "AppsFlyerLib", package: "AppsFlyerLib"),
+              .product(name: "AppsFlyerLib-Static", package: "AppsFlyerLib"),
             ],
             path: "SPM/mParticle-AppsFlyer-NoLocation"
         )
