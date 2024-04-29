@@ -17,11 +17,7 @@ Pod::Spec.new do |s|
 
     s.ios.deployment_target = "9.0"
     s.ios.source_files      = 'Sources/**/*.{h,m,mm}'
-    s.ios.dependency 'mParticle-Apple-SDK/mParticle', '~> 8.0'
-    s.ios.dependency 'AppsFlyerFramework', '~> 6.8'
-
-    s.ios.pod_target_xcconfig = {
-        'FRAMEWORK_SEARCH_PATHS' => '$(inherited) $(PODS_ROOT)/AppsFlyerFramework/**',
-        'OTHER_LDFLAGS' => '$(inherited) -framework "AppsFlyerLib"'
-    }
+    s.resource_bundles      = { 'mParticle-AppsFlyer-Privacy' => ['Sources/mParticle-AppsFlyer/PrivacyInfo.xcprivacy'] }
+    s.ios.dependency 'mParticle-Apple-SDK/mParticle', '~> 8.19'
+    s.ios.dependency 'AppsFlyerFramework', '~> 6.14'
 end
