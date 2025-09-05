@@ -21,6 +21,16 @@ NSString *const afDevKey = @"devKey";
 NSString *const afAppsFlyerIdIntegrationKey = @"appsflyer_id_integration_setting";
 NSString *const kMPKAFCustomerUserId = @"af_customer_user_id";
 
+// Consent Mapping Keys
+NSString *const kMPAFAdStorageKey = @"ad_storage";
+NSString *const kMPAFAdUserDataKey = @"ad_user_data";
+NSString *const kMPAFAdPersonalizationKey = @"ad_personalization";
+
+// Default Consent Keys (from mParticle UI)
+NSString *const kMPAFDefaultAdStorageKey = @"defaultAdStorageConsentSDK";
+NSString *const kMPAFDefaultAdUserDataKey = @"defaultAdUserDataConsentSDK";
+NSString *const kMPAFDefaultAdPersonalizationKey = @"defaultAdPersonalizationConsentSDK";
+
 static AppsFlyerLib *appsFlyerTracker = nil;
 static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
 
@@ -88,6 +98,7 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
     appsFlyerTracker.deepLinkDelegate = self;
     
     _configuration = configuration;
+    [self updateConsent];
     [appsFlyerTracker waitForATTUserAuthorizationWithTimeoutInterval:60];
     [self start];
     
@@ -436,6 +447,82 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
     }
     
     return _kitApi;
+}
+
+- (MPKitExecStatus *)setConsentState:(nullable MPConsentState *)state {
+    [self updateConsent];
+    return [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer)
+                                         returnCode:MPKitReturnCodeSuccess];
+}
+
+- (void)updateConsent {
+    BOOL isUserSubjectToGDPR = NO;
+    NSNumber *dataUsage = nil;
+    NSNumber *personalization = nil;
+    NSNumber *storage = nil;
+    
+    // Defaults Consent States
+    NSString *defaultUserData = self->_configuration[kMPAFDefaultAdUserDataKey];
+    if ([defaultUserData isEqualToString:@"Granted"]) {
+        dataUsage = @(YES);
+    } else if ([defaultUserData isEqualToString:@"Denied"]) {
+        dataUsage = @(NO);
+    }
+
+    NSString *defaultPersonalization = self->_configuration[kMPAFDefaultAdPersonalizationKey];
+    if ([defaultPersonalization isEqualToString:@"Granted"]) {
+        personalization = @(YES);
+    } else if ([defaultPersonalization isEqualToString:@"Denied"]) {
+        personalization = @(NO);
+    }
+
+    NSString *defaultStorage = self->_configuration[kMPAFDefaultAdStorageKey];
+    if ([defaultStorage isEqualToString:@"Granted"]) {
+        storage = @(YES);
+    } else if ([defaultStorage isEqualToString:@"Denied"]) {
+        storage = @(NO);
+    }
+
+    // Update from mParticle Consent
+    MParticleUser *currentUser = [[[MParticle sharedInstance] identity] currentUser];
+    NSDictionary<NSString *, MPGDPRConsent *> *gdprConsents = currentUser.consentState.gdprConsentState;
+
+    if (gdprConsents.count > 0) {
+        isUserSubjectToGDPR = YES;
+    }
+
+    if (self->_configuration[kMPAFAdUserDataKey] && gdprConsents[self->_configuration[kMPAFAdUserDataKey]]) {
+        MPGDPRConsent *consent = gdprConsents[self->_configuration[kMPAFAdUserDataKey]];
+        dataUsage = consent.consented ? @(YES) : @(NO);
+    }
+
+    if (self->_configuration[kMPAFAdPersonalizationKey] && gdprConsents[self->_configuration[kMPAFAdPersonalizationKey]]) {
+        MPGDPRConsent *consent = gdprConsents[self->_configuration[kMPAFAdPersonalizationKey]];
+        personalization = consent.consented ? @(YES) : @(NO);
+    }
+
+    if (self->_configuration[kMPAFAdStorageKey] && gdprConsents[self->_configuration[kMPAFAdStorageKey]]) {
+        MPGDPRConsent *consent = gdprConsents[self->_configuration[kMPAFAdStorageKey]];
+        storage = consent.consented ? @(YES) : @(NO);
+    }
+
+    AppsFlyerConsent *consentObj = nil;
+    if (isUserSubjectToGDPR) {
+        consentObj = [[AppsFlyerConsent alloc]
+            initWithIsUserSubjectToGDPR:@(YES)
+            hasConsentForDataUsage:dataUsage
+            hasConsentForAdsPersonalization:personalization
+            hasConsentForAdStorage:storage];
+    } else {
+        consentObj = [[AppsFlyerConsent alloc]
+            initWithIsUserSubjectToGDPR:@(NO)
+            hasConsentForDataUsage:nil
+            hasConsentForAdsPersonalization:nil
+            hasConsentForAdStorage:nil];
+    }
+
+    // Update consent state with AppsFlyer
+    [appsFlyerTracker setConsentData:consentObj];
 }
 
 #pragma helper methods
