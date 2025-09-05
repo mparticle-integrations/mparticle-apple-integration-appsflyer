@@ -464,9 +464,9 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
         isUserSubjectToGDPR = YES;
     }
     
-    NSNumber *dataUsage = [self mp_resolvedConsentForKey:kMPAFAdUserDataKey gdprConsents:gdprConsents];
-    NSNumber *personalization = [self mp_resolvedConsentForKey:kMPAFAdPersonalizationKey gdprConsents:gdprConsents];
-    NSNumber *storage = [self mp_resolvedConsentForKey:kMPAFAdStorageKey gdprConsents:gdprConsents];
+    NSNumber *dataUsage = [self resolvedConsentForKey:kMPAFAdUserDataKey gdprConsents:gdprConsents];
+    NSNumber *personalization = [self resolvedConsentForKey:kMPAFAdPersonalizationKey gdprConsents:gdprConsents];
+    NSNumber *storage = [self resolvedConsentForKey:kMPAFAdStorageKey gdprConsents:gdprConsents];
     
     AppsFlyerConsent *consentObj = nil;
     if (isUserSubjectToGDPR) {
@@ -489,7 +489,7 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
 
 #pragma helper methods
 
-- (NSNumber * _Nullable)mp_valueForConsentKey:(NSString *)key {
+- (NSNumber * _Nullable)valueForConsentKey:(NSString *)key {
     NSString *value = self->_configuration[key];
     if ([value isEqualToString:@"Granted"]) {
         return @(YES);
@@ -499,10 +499,10 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
     return nil;
 }
 
-- (NSNumber * _Nullable)mp_resolvedConsentForKey:(NSString *)key
+- (NSNumber * _Nullable)resolvedConsentForKey:(NSString *)key
                                     gdprConsents:(NSDictionary<NSString *, MPGDPRConsent *> *)gdprConsents {
     // Defaults Consent States
-    NSNumber *value = [self mp_valueForConsentKey:key];
+    NSNumber *value = [self valueForConsentKey:key];
     
     // Update from mParticle Consent
     if (self->_configuration[key] && gdprConsents[self->_configuration[key]]) {
