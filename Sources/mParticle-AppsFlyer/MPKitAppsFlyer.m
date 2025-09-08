@@ -27,9 +27,9 @@ NSString *const kMPAFAdUserDataKey = @"ad_user_data";
 NSString *const kMPAFAdPersonalizationKey = @"ad_personalization";
 
 // Default Consent Keys (from mParticle UI)
-NSString *const kMPAFDefaultAdStorageKey = @"defaultAdStorageConsentSDK";
-NSString *const kMPAFDefaultAdUserDataKey = @"defaultAdUserDataConsentSDK";
-NSString *const kMPAFDefaultAdPersonalizationKey = @"defaultAdPersonalizationConsentSDK";
+NSString *const kMPAFDefaultAdStorageKey = @"defaultAdStorageConsent";
+NSString *const kMPAFDefaultAdUserDataKey = @"defaultAdUserDataConsent";
+NSString *const kMPAFDefaultAdPersonalizationKey = @"defaultAdPersonalizationConsent";
 
 static AppsFlyerLib *appsFlyerTracker = nil;
 static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
@@ -457,6 +457,12 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
 
 - (void)updateConsent {
     BOOL isUserSubjectToGDPR = NO;
+
+    NSString *gdprValue = _configuration[@"gdprApplies"];
+    if ([gdprValue isKindOfClass:[NSString class]]) {
+        isUserSubjectToGDPR = [gdprValue boolValue];
+    }
+
     MParticleUser *currentUser = [[[MParticle sharedInstance] identity] currentUser];
     NSDictionary<NSString *, MPGDPRConsent *> *gdprConsents = currentUser.consentState.gdprConsentState;
 
@@ -464,24 +470,24 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
         isUserSubjectToGDPR = YES;
     }
     
-    NSNumber *dataUsage = [self resolvedConsentForKey:kMPAFAdUserDataKey gdprConsents:gdprConsents];
-    NSNumber *personalization = [self resolvedConsentForKey:kMPAFAdPersonalizationKey gdprConsents:gdprConsents];
-    NSNumber *storage = [self resolvedConsentForKey:kMPAFAdStorageKey gdprConsents:gdprConsents];
-    
-    AppsFlyerConsent *consentObj = nil;
-    if (isUserSubjectToGDPR) {
-        consentObj = [[AppsFlyerConsent alloc]
-            initWithIsUserSubjectToGDPR:@(YES)
-            hasConsentForDataUsage:dataUsage
-            hasConsentForAdsPersonalization:personalization
-            hasConsentForAdStorage:storage];
-    } else {
-        consentObj = [[AppsFlyerConsent alloc]
-            initWithIsUserSubjectToGDPR:@(NO)
-            hasConsentForDataUsage:nil
-            hasConsentForAdsPersonalization:nil
-            hasConsentForAdStorage:nil];
-    }
+    NSNumber *dataUsage = [self resolvedConsentForMappingKey:kMPAFAdUserDataKey
+                                                  defaultKey:kMPAFDefaultAdUserDataKey
+                                                gdprConsents:gdprConsents];
+
+    NSNumber *personalization = [self resolvedConsentForMappingKey:kMPAFAdPersonalizationKey
+                                                        defaultKey:kMPAFDefaultAdPersonalizationKey
+                                                      gdprConsents:gdprConsents];
+
+    NSNumber *storage = [self resolvedConsentForMappingKey:kMPAFAdStorageKey
+                                                defaultKey:kMPAFDefaultAdStorageKey
+                                              gdprConsents:gdprConsents];
+
+
+    AppsFlyerConsent *consentObj = [[AppsFlyerConsent alloc]
+        initWithIsUserSubjectToGDPR:@(isUserSubjectToGDPR)
+        hasConsentForDataUsage:isUserSubjectToGDPR ? dataUsage : nil
+        hasConsentForAdsPersonalization:isUserSubjectToGDPR ? personalization : nil
+        hasConsentForAdStorage:isUserSubjectToGDPR ? storage : nil];
 
     // Update consent state with AppsFlyer
     [appsFlyerTracker setConsentData:consentObj];
@@ -489,8 +495,17 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
 
 #pragma helper methods
 
-- (NSNumber * _Nullable)valueForConsentKey:(NSString *)key {
-    NSString *value = self->_configuration[key];
+- (NSNumber * _Nullable)resolvedConsentForMappingKey:(NSString *)mappingKey
+                                          defaultKey:(NSString *)defaultKey
+                                        gdprConsents:(NSDictionary<NSString *, MPGDPRConsent *> *)gdprConsents {
+    // Prefer mParticle Consent if available
+    MPGDPRConsent *consent = gdprConsents[mappingKey];
+    if (consent) {
+        return consent.consented ? @(YES) : @(NO);
+    }
+
+    // Fallback to configuration defaults
+    NSString *value = self->_configuration[defaultKey];
     if ([value isEqualToString:@"Granted"]) {
         return @(YES);
     } else if ([value isEqualToString:@"Denied"]) {
@@ -499,18 +514,6 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
     return nil;
 }
 
-- (NSNumber * _Nullable)resolvedConsentForKey:(NSString *)key
-                                    gdprConsents:(NSDictionary<NSString *, MPGDPRConsent *> *)gdprConsents {
-    // Defaults Consent States
-    NSNumber *value = [self valueForConsentKey:key];
-    
-    // Update from mParticle Consent
-    if (self->_configuration[key] && gdprConsents[self->_configuration[key]]) {
-        MPGDPRConsent *consent = gdprConsents[self->_configuration[key]];
-        value = consent.consented ? @(YES) : @(NO);
-    }
-    return value;
-}
 
 - (FilteredMParticleUser *)currentUser {
     return [[self kitApi] getCurrentUserWithKit:self];
