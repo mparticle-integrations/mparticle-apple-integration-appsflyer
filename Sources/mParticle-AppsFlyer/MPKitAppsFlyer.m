@@ -506,7 +506,7 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
     if (purpose) {
         MPGDPRConsent *consent = gdprConsents[purpose];
         if (consent) {
-            return consent.consented ? @(YES) : @(NO);
+            return @(consent.consented);
         }
     }
 
