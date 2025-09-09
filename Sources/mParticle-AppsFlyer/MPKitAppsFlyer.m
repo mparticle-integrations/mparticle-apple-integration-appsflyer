@@ -498,10 +498,30 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
 - (NSNumber * _Nullable)resolvedConsentForMappingKey:(NSString *)mappingKey
                                           defaultKey:(NSString *)defaultKey
                                         gdprConsents:(NSDictionary<NSString *, MPGDPRConsent *> *)gdprConsents {
-    // Prefer mParticle Consent if available
-    MPGDPRConsent *consent = gdprConsents[mappingKey];
-    if (consent) {
-        return consent.consented ? @(YES) : @(NO);
+    // Parse the consentMapping JSON string
+    NSString *mappingJson = self->_configuration[@"consentMapping"];
+    if ([mappingJson isKindOfClass:[NSString class]]) {
+        NSData *jsonData = [mappingJson dataUsingEncoding:NSUTF8StringEncoding];
+        if (jsonData) {
+            NSError *error = nil;
+            NSArray *mappings = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&error];
+            if (!error && [mappings isKindOfClass:[NSArray class]]) {
+                for (NSDictionary *entry in mappings) {
+                    if ([entry isKindOfClass:[NSDictionary class]]) {
+                        NSString *value = entry[@"value"];
+                        NSString *purpose = [entry[@"map"] lowercaseString];
+
+                        // Prefer mParticle Consent if available
+                        if ([value isEqualToString:mappingKey] && purpose) {
+                            MPGDPRConsent *consent = gdprConsents[purpose];
+                            if (consent) {
+                                return consent.consented ? @(YES) : @(NO);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     // Fallback to configuration defaults
