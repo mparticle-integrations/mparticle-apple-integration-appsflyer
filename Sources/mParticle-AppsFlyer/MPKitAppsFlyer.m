@@ -35,6 +35,7 @@ static AppsFlyerLib *appsFlyerTracker = nil;
 static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
 
 @interface MPKitAppsFlyer() <AppsFlyerLibDelegate, AppsFlyerDeepLinkDelegate>
+@property (nonatomic, strong) NSDictionary<NSString *, NSString *> *consentMappingDict;
 @end
 
 @implementation MPKitAppsFlyer
@@ -98,6 +99,7 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
     appsFlyerTracker.deepLinkDelegate = self;
     
     _configuration = configuration;
+    [self parseConsentMappings];
     [self updateConsent];
     [appsFlyerTracker waitForATTUserAuthorizationWithTimeoutInterval:60];
     [self start];
@@ -498,21 +500,13 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
 - (NSNumber * _Nullable)resolvedConsentForMappingKey:(NSString *)mappingKey
                                           defaultKey:(NSString *)defaultKey
                                         gdprConsents:(NSDictionary<NSString *, MPGDPRConsent *> *)gdprConsents {
-    // Parse the consentMapping JSON string
-    NSString *mappingJson = self->_configuration[@"consentMapping"];
-    if ([mappingJson isKindOfClass:[NSString class]]) {
-        NSData *jsonData = [mappingJson dataUsingEncoding:NSUTF8StringEncoding];
-        NSArray<NSDictionary *> *mappings = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:nil];
 
-        for (NSDictionary *entry in mappings) {
-            if ([entry[@"value"] isEqualToString:mappingKey]) {
-                // Prefer mParticle Consent if available
-                NSString *purpose = [entry[@"map"] lowercaseString];
-                MPGDPRConsent *consent = gdprConsents[purpose];
-                if (consent) {
-                    return consent.consented ? @(YES) : @(NO);
-                }
-            }
+    // Prefer mParticle Consent if available
+    NSString *purpose = self.consentMappingDict[mappingKey];
+    if (purpose) {
+        MPGDPRConsent *consent = gdprConsents[purpose];
+        if (consent) {
+            return consent.consented ? @(YES) : @(NO);
         }
     }
 
@@ -525,6 +519,25 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
     }
     return nil;
 }
+
+- (void)parseConsentMappings {
+    NSString *mappingJson = _configuration[@"consentMapping"];
+    if ([mappingJson isKindOfClass:[NSString class]]) {
+        NSData *jsonData = [mappingJson dataUsingEncoding:NSUTF8StringEncoding];
+        NSArray<NSDictionary *> *mappings = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:nil];
+        
+        NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+        for (NSDictionary *entry in mappings) {
+            NSString *value = entry[@"value"];
+            NSString *purpose = [entry[@"map"] lowercaseString];
+            if (value && purpose) {
+                dict[value] = purpose;
+            }
+        }
+        self.consentMappingDict = [dict copy];
+    }
+}
+
 
 
 - (FilteredMParticleUser *)currentUser {
