@@ -35,7 +35,6 @@ static AppsFlyerLib *appsFlyerTracker = nil;
 static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
 
 @interface MPKitAppsFlyer() <AppsFlyerLibDelegate, AppsFlyerDeepLinkDelegate>
-@property (nonatomic, strong) NSDictionary<NSString *, NSString *> *consentMappingDict;
 @end
 
 @implementation MPKitAppsFlyer
@@ -99,7 +98,7 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
     appsFlyerTracker.deepLinkDelegate = self;
     
     _configuration = configuration;
-    [self parseConsentMappings];
+
     [self updateConsent];
     [appsFlyerTracker waitForATTUserAuthorizationWithTimeoutInterval:60];
     [self start];
@@ -458,6 +457,12 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
 }
 
 - (void)updateConsent {
+    NSArray<NSDictionary *> *mappings = [self mappingForKey: @"consentMapping"];
+    NSDictionary<NSString *, NSString *> *mappingsConfig;
+    if (mappings != nil) {
+        mappingsConfig = [self convertToKeyValuePairs: mappings];
+    }
+    
     BOOL isUserSubjectToGDPR = NO;
 
     NSString *gdprValue = _configuration[@"gdprApplies"];
@@ -474,15 +479,18 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
     
     NSNumber *dataUsage = [self resolvedConsentForMappingKey:kMPAFAdUserDataKey
                                                   defaultKey:kMPAFDefaultAdUserDataKey
-                                                gdprConsents:gdprConsents];
+                                                gdprConsents:gdprConsents
+                                              mappingsConfig:mappingsConfig];
 
     NSNumber *personalization = [self resolvedConsentForMappingKey:kMPAFAdPersonalizationKey
                                                         defaultKey:kMPAFDefaultAdPersonalizationKey
-                                                      gdprConsents:gdprConsents];
+                                                      gdprConsents:gdprConsents
+                                                    mappingsConfig:mappingsConfig];
 
     NSNumber *storage = [self resolvedConsentForMappingKey:kMPAFAdStorageKey
                                                 defaultKey:kMPAFDefaultAdStorageKey
-                                              gdprConsents:gdprConsents];
+                                              gdprConsents:gdprConsents
+                                            mappingsConfig:mappingsConfig];
 
 
     AppsFlyerConsent *consentObj = [[AppsFlyerConsent alloc]
@@ -499,10 +507,11 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
 
 - (NSNumber * _Nullable)resolvedConsentForMappingKey:(NSString *)mappingKey
                                           defaultKey:(NSString *)defaultKey
-                                        gdprConsents:(NSDictionary<NSString *, MPGDPRConsent *> *)gdprConsents {
+                                        gdprConsents:(NSDictionary<NSString *, MPGDPRConsent *> *)gdprConsents
+                                      mappingsConfig:(NSDictionary<NSString *, NSString*> *) mapping {
 
     // Prefer mParticle Consent if available
-    NSString *purpose = self.consentMappingDict[mappingKey];
+    NSString *purpose = mapping[mappingKey];
     if (purpose) {
         MPGDPRConsent *consent = gdprConsents[purpose];
         if (consent) {
@@ -520,25 +529,26 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
     return nil;
 }
 
-- (void)parseConsentMappings {
+- (NSArray<NSDictionary *>*)mappingForKey:(NSString*)key {
     NSString *mappingJson = _configuration[@"consentMapping"];
     if ([mappingJson isKindOfClass:[NSString class]]) {
         NSData *jsonData = [mappingJson dataUsingEncoding:NSUTF8StringEncoding];
-        NSArray<NSDictionary *> *mappings = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:nil];
-        
-        NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-        for (NSDictionary *entry in mappings) {
-            NSString *value = entry[@"value"];
-            NSString *purpose = [entry[@"map"] lowercaseString];
-            if (value && purpose) {
-                dict[value] = purpose;
-            }
-        }
-        self.consentMappingDict = [dict copy];
+        return [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:nil];
     }
+    return nil;
 }
 
-
+- (NSDictionary*)convertToKeyValuePairs: (NSArray<NSDictionary *>*) mappings {
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    for (NSDictionary *entry in mappings) {
+        NSString *value = entry[@"value"];
+        NSString *purpose = [entry[@"map"] lowercaseString];
+        if (value && purpose) {
+            dict[value] = purpose;
+        }
+    }
+    return dict;
+}
 
 - (FilteredMParticleUser *)currentUser {
     return [[self kitApi] getCurrentUserWithKit:self];
