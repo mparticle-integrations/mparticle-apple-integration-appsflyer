@@ -508,7 +508,7 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
 - (NSNumber * _Nullable)resolvedConsentForMappingKey:(NSString *)mappingKey
                                           defaultKey:(NSString *)defaultKey
                                         gdprConsents:(NSDictionary<NSString *, MPGDPRConsent *> *)gdprConsents
-                                      mapping:(NSDictionary<NSString *, NSString*> *) mapping {
+                                             mapping:(NSDictionary<NSString *, NSString*> *) mapping {
 
     // Prefer mParticle Consent if available
     NSString *purpose = mapping[mappingKey];
