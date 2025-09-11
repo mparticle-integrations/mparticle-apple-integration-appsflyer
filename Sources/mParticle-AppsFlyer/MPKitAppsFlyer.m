@@ -480,17 +480,17 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
     NSNumber *dataUsage = [self resolvedConsentForMappingKey:kMPAFAdUserDataKey
                                                   defaultKey:kMPAFDefaultAdUserDataKey
                                                 gdprConsents:gdprConsents
-                                              mapping:mappingsConfig];
+                                                     mapping:mappingsConfig];
 
     NSNumber *personalization = [self resolvedConsentForMappingKey:kMPAFAdPersonalizationKey
                                                         defaultKey:kMPAFDefaultAdPersonalizationKey
                                                       gdprConsents:gdprConsents
-                                                    mapping:mappingsConfig];
+                                                           mapping:mappingsConfig];
 
     NSNumber *storage = [self resolvedConsentForMappingKey:kMPAFAdStorageKey
                                                 defaultKey:kMPAFDefaultAdStorageKey
                                               gdprConsents:gdprConsents
-                                            mapping:mappingsConfig];
+                                                   mapping:mappingsConfig];
 
 
     AppsFlyerConsent *consentObj = [[AppsFlyerConsent alloc]
