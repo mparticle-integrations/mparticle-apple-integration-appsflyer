@@ -530,7 +530,7 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
 }
 
 - (NSArray<NSDictionary *>*)mappingForKey:(NSString*)key {
-    NSString *mappingJson = _configuration[@"consentMapping"];
+    NSString *mappingJson = _configuration[key];
     if (![mappingJson isKindOfClass:[NSString class]]) {
         return nil;
     }
