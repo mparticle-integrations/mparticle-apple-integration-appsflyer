@@ -34,6 +34,19 @@ NSString *const kMPAFDefaultAdPersonalizationKey = @"defaultAdPersonalizationCon
 static AppsFlyerLib *appsFlyerTracker = nil;
 static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
 
+@implementation NSString(PRIVATE)
+
+- (NSNumber*)isGranted {
+    if ([self isEqualToString:@"Granted"]) {
+        return @(YES);
+    } else if ([self isEqualToString:@"Denied"]) {
+        return @(NO);
+    }
+    return nil;
+}
+
+@end
+
 @interface MPKitAppsFlyer() <AppsFlyerLibDelegate, AppsFlyerDeepLinkDelegate>
 @end
 
@@ -521,12 +534,7 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
 
     // Fallback to configuration defaults
     NSString *value = self->_configuration[defaultKey];
-    if ([value isEqualToString:@"Granted"]) {
-        return @(YES);
-    } else if ([value isEqualToString:@"Denied"]) {
-        return @(NO);
-    }
-    return nil;
+    return [value isGranted];
 }
 
 - (NSArray<NSDictionary *>*)mappingForKey:(NSString*)key {
