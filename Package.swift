@@ -40,6 +40,18 @@ let package = Package(
             ],
             path: "SPM/mParticle-AppsFlyer-NoLocation",
             resources: [.process("PrivacyInfo.xcprivacy")]
+        ),
+        
+        .testTarget(
+            name: "mParticle-AppsFlyer-Swift-Tests",
+            dependencies: ["mParticle-AppsFlyer"],
+            path: "mParticle_AppsFlyerTests/Swift"
+        ),
+
+        .testTarget(
+            name: "mParticle-AppsFlyer-Objc-Tests",
+            dependencies: ["mParticle-AppsFlyer"],
+            path: "mParticle_AppsFlyerTests/Objc",
         )
     ]
 )
