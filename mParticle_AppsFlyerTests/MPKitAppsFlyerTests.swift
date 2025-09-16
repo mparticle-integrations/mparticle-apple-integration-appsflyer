@@ -1,5 +1,5 @@
 //
-//  mParticle_AppsFlyerSwiftTests.swift
+//  MPKitAppsFlyerTests.swift
 //  mParticle-AppsFlyer
 //
 //  Created by Nick Dimitrakas on 9/16/25.
