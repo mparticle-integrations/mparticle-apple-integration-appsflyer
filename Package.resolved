@@ -18,15 +18,6 @@
           "revision": "e629ee514f760bd14f195ac34370afba4c816baa",
           "version": "8.38.0"
         }
-      },
-      {
-        "package": "OCMock",
-        "repositoryURL": "https://github.com/erikdoe/ocmock.git",
-        "state": {
-          "branch": null,
-          "revision": "afd2c6924e8a36cb872bc475248b978f743c6050",
-          "version": null
-        }
       }
     ]
   },

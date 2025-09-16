@@ -20,6 +20,7 @@ extern NSString * _Nonnull const MPKitAppsFlyerErrorDomain;
 @property (nonatomic, strong, nonnull) NSDictionary *configuration;
 @property (nonatomic, unsafe_unretained, readonly) BOOL started;
 @property (nonatomic, strong, nullable) MPKitAPI *kitApi;
+@property (nonatomic, strong, nullable) id providerKitInstance;
 
 + (void)setDelegate:(id _Nonnull)delegate;
 + (NSNumber * _Nonnull)computeProductQuantity:(nullable MPCommerceEvent *)event;
@@ -33,6 +34,8 @@ extern NSString * _Nonnull const MPKitAppsFlyerErrorDomain;
 - (nullable NSArray<NSDictionary *>*)mappingForKey:(NSString* _Nonnull)key;
 
 - (nonnull NSDictionary*)convertToKeyValuePairs: (NSArray<NSDictionary *> * _Nonnull)mappings;
+
+- (nonnull MPKitExecStatus *)routeCommerceEvent:(nonnull MPCommerceEvent *)commerceEvent;
 @end
 
 extern NSString * _Nonnull const MPKitAppsFlyerAttributionResultKey __deprecated_msg("Use MPKitAppsFlyerConversionResultKey instead.");
