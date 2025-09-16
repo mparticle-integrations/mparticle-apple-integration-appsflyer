@@ -24,6 +24,15 @@ extern NSString * _Nonnull const MPKitAppsFlyerErrorDomain;
 + (void)setDelegate:(id _Nonnull)delegate;
 + (NSNumber * _Nonnull)computeProductQuantity:(nullable MPCommerceEvent *)event;
 + (NSString * _Nullable)generateProductIdList:(nullable MPCommerceEvent *)event;
+
+- (nullable NSNumber *)resolvedConsentForMappingKey:(NSString * _Nonnull)mappingKey
+                                         defaultKey:(NSString * _Nonnull)defaultKey
+                                       gdprConsents:(NSDictionary<NSString *, MPGDPRConsent *> * _Nonnull)gdprConsents
+                                            mapping:(NSDictionary<NSString *, NSString *> * _Nullable)mapping;
+
+- (nullable NSArray<NSDictionary *>*)mappingForKey:(NSString* _Nonnull)key;
+
+- (nonnull NSDictionary*)convertToKeyValuePairs: (NSArray<NSDictionary *> * _Nonnull)mappings;
 @end
 
 extern NSString * _Nonnull const MPKitAppsFlyerAttributionResultKey __deprecated_msg("Use MPKitAppsFlyerConversionResultKey instead.");
