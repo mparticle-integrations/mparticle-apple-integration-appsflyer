@@ -22,6 +22,9 @@ let package = Package(
       .package(name: "AppsFlyerLib",
                url: "https://github.com/AppsFlyerSDK/AppsFlyerFramework-Static",
                .upToNextMajor(from: "6.14.3")),
+      .package(name: "OCMock",
+               url: "https://github.com/erikdoe/ocmock.git",
+               .revision("afd2c6924e8a36cb872bc475248b978f743c6050"))
     ],
     targets: [
         .target(
@@ -50,7 +53,10 @@ let package = Package(
 
         .testTarget(
             name: "mParticle-AppsFlyer-Objc-Tests",
-            dependencies: ["mParticle-AppsFlyer"],
+            dependencies: [
+                "mParticle-AppsFlyer",
+                .product(name: "OCMock", package: "OCMock")
+            ],
             path: "mParticle_AppsFlyerTests/Objc",
         )
     ]

@@ -6,10 +6,10 @@
 //  Copyright © 2018 mParticle. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
-#import "mParticle_AppsFlyer.h"
-#import <AppsFlyerLib/AppsFlyerLib.h>
-//#import <OCMock/OCMock.h>
+@import mParticle_Apple_SDK;
+@import mParticle_AppsFlyer;
+@import XCTest;
+@import OCMock;
 
 NSString *const afAppleAppId = @"appleAppId";
 NSString *const afDevKey = @"devKey";
