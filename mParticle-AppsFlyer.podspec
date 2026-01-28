@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name             = "mParticle-AppsFlyer"
-    s.version          = "8.4.2"
+    s.version          = "9.0.0"
     s.summary          = "AppsFlyer integration for mParticle"
 
     s.description      = <<-DESC
@@ -19,6 +19,6 @@ Pod::Spec.new do |s|
     s.ios.deployment_target = "12.0"
     s.ios.source_files      = 'Sources/**/*.{h,m,mm}'
     s.ios.resource_bundles  = { 'mParticle-AppsFlyer-Privacy' => ['Sources/mParticle-AppsFlyer/PrivacyInfo.xcprivacy'] }
-    s.ios.dependency 'mParticle-Apple-SDK/mParticle', '~> 8.19'
+    s.ios.dependency 'mParticle-Apple-SDK/mParticle', '~> 9.0'
     s.ios.dependency 'AppsFlyerFramework', '~> 6.16'
 end
