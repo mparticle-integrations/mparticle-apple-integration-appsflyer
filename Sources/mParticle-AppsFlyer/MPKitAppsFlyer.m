@@ -18,7 +18,9 @@ NSString *const MPKitAppsFlyerErrorDomain = @"mParticle-AppsFlyer";
 
 NSString *const afAppleAppId = @"appleAppId";
 NSString *const afDevKey = @"devKey";
-NSString *const afSharingFilterForPartners = @"sharingFilterForPartners";
+NSString *const afManualStart = @"manualStart";
+NSString *const afUserIdentificationType = @"userIdentificationType";
+NSString *const afUserIdentificationMPID = @"MPID";
 NSString *const afAppsFlyerIdIntegrationKey = @"appsflyer_id_integration_setting";
 NSString *const kMPKAFCustomerUserId = @"af_customer_user_id";
 
@@ -112,11 +114,8 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
     appsFlyerTracker.deepLinkDelegate = self;
     
     _configuration = configuration;
-
-    NSArray<NSString *> *sharingFilter = [self sharingFilterForPartnersFromConfiguration:configuration];
-    if (sharingFilter.count > 0) {
-        [appsFlyerTracker setSharingFilterForPartners:sharingFilter];
-    }
+    
+    [self updateCustomerUserIDIfNeededForUser:[self currentUser]];
 
     [self updateConsent];
     [appsFlyerTracker waitForATTUserAuthorizationWithTimeoutInterval:60];
@@ -151,7 +150,10 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
 }
 
 - (nonnull MPKitExecStatus *)didBecomeActive {
-    [appsFlyerTracker start];
+    BOOL manualStart = [_configuration[afManualStart] boolValue];
+    if (!manualStart) {
+        [appsFlyerTracker start];
+    }
     MPKitExecStatus *execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
     return execStatus;
 }
@@ -199,7 +201,9 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
 
 - (nonnull MPKitExecStatus *)setUserIdentity:(nullable NSString *)identityString identityType:(MPUserIdentity)identityType {
     MPKitExecStatus *execStatus;
-    if (identityType == MPUserIdentityCustomerId) {
+    if ([self isUserIdentificationMPID]) {
+        execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
+    } else if (identityType == MPUserIdentityCustomerId) {
         [appsFlyerTracker setCustomerUserID:identityString];
         execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
     } else if (identityType == MPUserIdentityEmail) {
@@ -214,6 +218,26 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
         execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeFail];
     }
     return execStatus;
+}
+
+- (nonnull MPKitExecStatus *)onIdentifyComplete:(nonnull FilteredMParticleUser *)user request:(nonnull FilteredMPIdentityApiRequest *)request {
+    [self updateCustomerUserIDIfNeededForUser:user];
+    return [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
+}
+
+- (nonnull MPKitExecStatus *)onLoginComplete:(nonnull FilteredMParticleUser *)user request:(nonnull FilteredMPIdentityApiRequest *)request {
+    [self updateCustomerUserIDIfNeededForUser:user];
+    return [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
+}
+
+- (nonnull MPKitExecStatus *)onLogoutComplete:(nonnull FilteredMParticleUser *)user request:(nonnull FilteredMPIdentityApiRequest *)request {
+    [self updateCustomerUserIDIfNeededForUser:user];
+    return [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
+}
+
+- (nonnull MPKitExecStatus *)onModifyComplete:(nonnull FilteredMParticleUser *)user request:(nonnull FilteredMPIdentityApiRequest *)request {
+    [self updateCustomerUserIDIfNeededForUser:user];
+    return [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
 }
 
 + (NSString * _Nullable)generateProductIdList:(nullable MPCommerceEvent *)event {
@@ -577,33 +601,16 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
     return [[self kitApi] getCurrentUserWithKit:self];
 }
 
-- (NSArray<NSString *> *)sharingFilterForPartnersFromConfiguration:(NSDictionary *)configuration {
-    id value = configuration[afSharingFilterForPartners];
-    if (!value) {
-        return nil;
-    }
+- (BOOL)isUserIdentificationMPID {
+    return [afUserIdentificationMPID isEqualToString:_configuration[afUserIdentificationType]];
+}
 
-    NSArray *partnerIds = nil;
-    if ([value isKindOfClass:[NSArray class]]) {
-        partnerIds = value;
-    } else if ([value isKindOfClass:[NSString class]]) {
-        NSData *jsonData = [value dataUsingEncoding:NSUTF8StringEncoding];
-        NSError *error;
-        partnerIds = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&error];
-        if (error || ![partnerIds isKindOfClass:[NSArray class]]) {
-            return nil;
-        }
-    } else {
-        return nil;
+- (void)updateCustomerUserIDIfNeededForUser:(FilteredMParticleUser *)user {
+    if (![self isUserIdentificationMPID] || !user.userId) {
+        return;
     }
-
-    NSMutableArray<NSString *> *result = [NSMutableArray arrayWithCapacity:partnerIds.count];
-    for (id item in partnerIds) {
-        if ([item isKindOfClass:[NSString class]] && ((NSString *)item).length > 0) {
-            [result addObject:item];
-        }
-    }
-    return result.count > 0 ? [result copy] : nil;
+    NSString *customerId = [user.userId stringValue];
+    [appsFlyerTracker setCustomerUserID:customerId];
 }
 
 @end
