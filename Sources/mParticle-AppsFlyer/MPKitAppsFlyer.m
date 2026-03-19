@@ -19,8 +19,6 @@ NSString *const MPKitAppsFlyerErrorDomain = @"mParticle-AppsFlyer";
 NSString *const afAppleAppId = @"appleAppId";
 NSString *const afDevKey = @"devKey";
 NSString *const afManualStart = @"manualStart";
-NSString *const afUserIdentificationType = @"userIdentificationType";
-NSString *const afUserIdentificationMPID = @"MPID";
 NSString *const afAppsFlyerIdIntegrationKey = @"appsflyer_id_integration_setting";
 NSString *const kMPKAFCustomerUserId = @"af_customer_user_id";
 
@@ -115,8 +113,6 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
     
     _configuration = configuration;
     
-    [self updateCustomerUserIDIfNeededForUser:[self currentUser]];
-
     [self updateConsent];
     [appsFlyerTracker waitForATTUserAuthorizationWithTimeoutInterval:60];
     [self start];
@@ -201,9 +197,7 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
 
 - (nonnull MPKitExecStatus *)setUserIdentity:(nullable NSString *)identityString identityType:(MPUserIdentity)identityType {
     MPKitExecStatus *execStatus;
-    if ([self isUserIdentificationMPID]) {
-        execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
-    } else if (identityType == MPUserIdentityCustomerId) {
+    if (identityType == MPUserIdentityCustomerId) {
         [appsFlyerTracker setCustomerUserID:identityString];
         execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
     } else if (identityType == MPUserIdentityEmail) {
@@ -218,26 +212,6 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
         execStatus = [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeFail];
     }
     return execStatus;
-}
-
-- (nonnull MPKitExecStatus *)onIdentifyComplete:(nonnull FilteredMParticleUser *)user request:(nonnull FilteredMPIdentityApiRequest *)request {
-    [self updateCustomerUserIDIfNeededForUser:user];
-    return [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
-}
-
-- (nonnull MPKitExecStatus *)onLoginComplete:(nonnull FilteredMParticleUser *)user request:(nonnull FilteredMPIdentityApiRequest *)request {
-    [self updateCustomerUserIDIfNeededForUser:user];
-    return [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
-}
-
-- (nonnull MPKitExecStatus *)onLogoutComplete:(nonnull FilteredMParticleUser *)user request:(nonnull FilteredMPIdentityApiRequest *)request {
-    [self updateCustomerUserIDIfNeededForUser:user];
-    return [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
-}
-
-- (nonnull MPKitExecStatus *)onModifyComplete:(nonnull FilteredMParticleUser *)user request:(nonnull FilteredMPIdentityApiRequest *)request {
-    [self updateCustomerUserIDIfNeededForUser:user];
-    return [[MPKitExecStatus alloc] initWithSDKCode:@(MPKitInstanceAppsFlyer) returnCode:MPKitReturnCodeSuccess];
 }
 
 + (NSString * _Nullable)generateProductIdList:(nullable MPCommerceEvent *)event {
@@ -599,18 +573,6 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
 
 - (FilteredMParticleUser *)currentUser {
     return [[self kitApi] getCurrentUserWithKit:self];
-}
-
-- (BOOL)isUserIdentificationMPID {
-    return [afUserIdentificationMPID isEqualToString:_configuration[afUserIdentificationType]];
-}
-
-- (void)updateCustomerUserIDIfNeededForUser:(FilteredMParticleUser *)user {
-    if (![self isUserIdentificationMPID] || !user.userId) {
-        return;
-    }
-    NSString *customerId = [user.userId stringValue];
-    [appsFlyerTracker setCustomerUserID:customerId];
 }
 
 @end
