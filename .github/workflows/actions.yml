@@ -17,10 +17,10 @@ jobs:
     # Job name is Test
     name: Test
     # This job runs on macOS
-    runs-on: macos-14
+    runs-on: macos-15
     strategy:
       matrix:
-        destination: ['platform=iOS Simulator,OS=17.2,name=iPhone 15']
+        destination: ['platform=iOS Simulator,OS=18.5,name=iPhone 16']
         xcode: ['/Applications/Xcode.app/Contents/Developer']
     steps:
       - name: Checkout
