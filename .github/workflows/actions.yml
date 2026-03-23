@@ -24,7 +24,7 @@ jobs:
         xcode: ['/Applications/Xcode.app/Contents/Developer']
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Dependencies
         run: |
           sudo gem install cocoapods
