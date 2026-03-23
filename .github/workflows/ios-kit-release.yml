@@ -16,11 +16,11 @@ jobs:
 
   create-release-branch:
     name: Create release branch
-    runs-on: macOS-12
+    runs-on: macos-14
     needs: confirm-main-branch
     steps:
       - name: Checkout development branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: ${{ github.repository }}
           token: ${{ secrets.MP_SEMANTIC_RELEASE_BOT }}
@@ -33,14 +33,14 @@ jobs:
 
   release:
     name: Perform release
-    runs-on: macOS-12
+    runs-on: macos-14
     needs: create-release-branch
     env:
       GITHUB_ACCESS_TOKEN: ${{ secrets.MP_SEMANTIC_RELEASE_BOT }}
       COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Validate environment
         run: |
@@ -53,7 +53,7 @@ jobs:
           git config user.name "mParticle Automation"
 
       - name: Checkout main branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           repository: ${{ github.repository }}
@@ -114,10 +114,10 @@ jobs:
   sync-repository:
     name: Finalize release
     needs: release
-    runs-on: macOS-12
+    runs-on: macos-14
     steps:
       - name: Checkout main branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           repository: ${{ github.repository }}
