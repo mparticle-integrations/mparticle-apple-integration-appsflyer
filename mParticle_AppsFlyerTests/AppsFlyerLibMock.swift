@@ -12,9 +12,21 @@ class AppsFlyerLibMock: AppsFlyerLib {
     var logEventEventName: String?
     var logEventValues: [AnyHashable : Any]?
     var startCallCount = 0
+    var setCustomerUserIDCallCount = 0
+    var lastCustomerUserID: String?
 
     override func start() {
         startCallCount += 1
+    }
+
+    /// `AppsFlyerLib` uses the `customerUserID` property; the kit sets it via `setCustomerUserID:`.
+    override var customerUserID: String? {
+        get { super.customerUserID }
+        set {
+            setCustomerUserIDCallCount += 1
+            lastCustomerUserID = newValue
+            super.customerUserID = newValue
+        }
     }
 
     override func logEvent(_ eventName: String, withValues values: [AnyHashable : Any]?) {
