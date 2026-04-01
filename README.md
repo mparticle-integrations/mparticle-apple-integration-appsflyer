@@ -2,6 +2,24 @@
 
 This repository contains the [AppsFlyer](https://www.appsflyer.com) integration for the [mParticle Apple SDK](https://github.com/mParticle/mparticle-apple-sdk).
 
+### Building the framework (fat .framework.zip and XCFramework)
+
+To build the kit and produce both archives from the repo root:
+
+1. Install CocoaPods dependencies (generates `mParticle-AppsFlyer.xcworkspace`):
+   ```bash
+   pod install
+   ```
+2. Run the build script:
+   ```bash
+   ./script/build_xcframework.sh
+   ```
+   Output in the repo root:
+   - `mParticle_AppsFlyer.framework.zip` — fat (universal) framework (device + simulator)
+   - `mParticle_AppsFlyer.xcframework.zip` — XCFramework (device and simulator slices; preferred for App Store)
+
+Open `mParticle-AppsFlyer.xcworkspace` (not the `.xcodeproj`) when building or testing from Xcode.
+
 ### Adding the integration
 
 1. Add the kit dependency to your app's Podfile or Cartfile:

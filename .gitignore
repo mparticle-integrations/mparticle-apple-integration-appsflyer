@@ -65,5 +65,8 @@ fastlane/test_output
 **/Podfile.lock
 **/*.xcworkspace
 **/*.framework.zip
+# Allow local release zips from ./script/build_xcframework.sh to show in the file tree (still untracked unless you git add).
+!mParticle_AppsFlyer.framework.zip
+!mParticle_AppsFlyer.xcframework.zip
 **/.DS_Store
 **/Cartfile.resolved
