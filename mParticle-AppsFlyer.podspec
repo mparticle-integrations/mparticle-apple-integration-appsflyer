@@ -19,6 +19,15 @@ Pod::Spec.new do |s|
     s.ios.deployment_target = "12.0"
     s.ios.source_files      = 'Sources/**/*.{h,m,mm}'
     s.ios.resource_bundles  = { 'mParticle-AppsFlyer-Privacy' => ['Sources/mParticle-AppsFlyer/PrivacyInfo.xcprivacy'] }
-    s.ios.dependency 'mParticle-Apple-SDK/mParticle', '~> 8.19'
     s.ios.dependency 'AppsFlyerFramework', '~> 6.16'
+
+    s.default_subspec = 'Standard'
+
+    s.subspec 'Standard' do |ss|
+        ss.ios.dependency 'mParticle-Apple-SDK/mParticle', '~> 8.19'
+    end
+
+    s.subspec 'NoLocation' do |ss|
+        ss.ios.dependency 'mParticle-Apple-SDK/mParticleNoLocation', '~> 8.19'
+    end
 end
