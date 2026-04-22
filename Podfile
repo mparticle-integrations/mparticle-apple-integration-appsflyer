@@ -10,7 +10,7 @@ project 'mParticle-AppsFlyer.xcodeproj'
 
 target 'mParticle-AppsFlyer' do
   project 'mParticle-AppsFlyer.xcodeproj'
-  pod 'mParticle-Apple-SDK/mParticle', '~> 8.19'
+  pod 'mParticle-Apple-SDK/mParticleNoLocation', '~> 8.19'
   pod 'AppsFlyerFramework', '~> 6.16'
 end
 
