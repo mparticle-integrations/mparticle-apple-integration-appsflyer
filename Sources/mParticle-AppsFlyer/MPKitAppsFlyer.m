@@ -83,6 +83,15 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
     }
 }
 
++ (BOOL)startManually {
+    if (appsFlyerTracker == nil) {
+        return NO;
+    }
+
+    [appsFlyerTracker start];
+    return YES;
+}
+
 + (NSNumber *)kitCode {
     return @92;
 }

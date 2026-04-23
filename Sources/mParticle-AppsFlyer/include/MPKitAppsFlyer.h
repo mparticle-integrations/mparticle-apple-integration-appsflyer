@@ -23,6 +23,7 @@ extern NSString * _Nonnull const MPKitAppsFlyerErrorDomain;
 @property (nonatomic, strong, nullable) id providerKitInstance;
 
 + (void)setDelegate:(id _Nonnull)delegate;
++ (BOOL)startManually;
 + (NSNumber * _Nonnull)computeProductQuantity:(nullable MPCommerceEvent *)event;
 + (NSString * _Nullable)generateProductIdList:(nullable MPCommerceEvent *)event;
 
