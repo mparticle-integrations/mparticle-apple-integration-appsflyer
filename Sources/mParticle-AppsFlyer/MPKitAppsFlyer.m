@@ -83,7 +83,7 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
     }
 }
 
-+ (BOOL)startManually {
++ (BOOL)startAppsFlyer {
     if (appsFlyerTracker == nil) {
         return NO;
     }
