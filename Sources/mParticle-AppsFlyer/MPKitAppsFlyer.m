@@ -85,6 +85,8 @@ static id<AppsFlyerLibDelegate> temporaryDelegate = nil;
 
 + (BOOL)startAppsFlyer {
     if (appsFlyerTracker == nil) {
+        NSLog(@"Warning: `startAppsFlyer` was called before AppsFlyer was initialized by mParticle. "
+              "Ensure the kit is configured and active before invoking manual start.");
         return NO;
     }
 
